@@ -11,10 +11,10 @@ all: $(target)
 	g++ $(CPPFLAGS) $< -o $@
 
 gcd_by_binary: gcd_by_binary.cpp biginteger_for_binary.cpp biginteger_for_binary.h
-	g++ $(CPPFLAGS) gcd_by_binary.cpp biginteger_for_binary.cpp -o0 $@
+	g++ $(CPPFLAGS) gcd_by_binary.cpp biginteger_for_binary.cpp -o $@
 
 gcd_by_euclid: gcd_by_euclid.cpp biginteger_for_euclid.cpp biginteger_for_euclid.h
-	g++ $(CPPFLAGS) gcd_by_euclid.cpp biginteger_for_euclid.cpp -o0 $@
+	g++ $(CPPFLAGS) gcd_by_euclid.cpp biginteger_for_euclid.cpp -o $@
 
 clean:
 	rm -rf $(target)
