@@ -20,11 +20,7 @@ int main()
 {
 	//HashMap hashMap;
 	//import( hashMap , "textdata.txt");
-	ifstream ifs;
-	ifs.open("textdata.txt", ifstream::in);
-	if(!ifs.is_open())
-		cout << "ERROR: open file failed" << endl;
-	//import("textdata.txt");
+	import("testdata.txt");
 
 }
     //記得要分段偵錯
@@ -40,7 +36,6 @@ void import(const string& path)
 	ifs.open( path.c_str(), ifstream::in);
 	if(!ifs.is_open())
 		cout << "ERROR: open file failed" << endl;
-	cout << path.c_str() << endl;
 	
 	string line;
 	while(getline(ifs, line)) //getline() reads from ifs a line, and store it into "line"
