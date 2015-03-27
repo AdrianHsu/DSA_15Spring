@@ -1,13 +1,12 @@
-bool inner(CircleList L, CircleList M)
-{
-    CNode* lHead, mHead;
-    lHead = &L.back(); 
+bool inner(CircleList L, CircleList M) 
+{   //Generally speaking, L & M are passed by value, not reference
+    CNode* mHead;
     mHead = &M.back();
     do{
         if(*mHead != *lHead)
             return false; //if one element isn't the same, return false
-        mHead++; //advance both to compare the next element
-        lHead++;
+        M.advance(); //advance both to compare the next element
+        L.advance();
     }while(mHead != &M.back()) // && lHead != &L.back() is redundent
     return true;
 }
