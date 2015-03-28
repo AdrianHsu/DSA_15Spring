@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+#include <utility>
 
 #include "src/HashMap.h"
 #include "src/HashNode.h"
@@ -13,11 +14,10 @@
 //#define _PRIME_NUM = 149639071
 
 using namespace std;
-typedef unsigned long long int longInt; //-2^(64-1) ~ 2^(64-1)-1
-//typedef unordered_map<longint, vector< HashNode > > _HashMap;
+typedef unordered_map<string, vector<HashNode>> _HashMap;
 
-bool string2Int(const string& , int*);
-
+bool string2Int(const string&, int*);
+bool insert(_HashMap&, string, HashNode*);
 int main()
 {
 	_HashMap hashMap;
@@ -33,53 +33,42 @@ int main()
 	while(getline(ifs, line)) //getline() reads from ifs a line, and store it into "line"
 	{
 		istringstream ss(line);
-		string s;
 		HashNode* temp = new HashNode;
-		int* num = new int;
 		int i = 0;
 		while( i < 12 )
 		{
-			ss >> s;
-			if(i == 2)
-			{
-				temp->setURL(s);
-				cout << i << " " << temp->getURL() << endl;
-			}
-			else
-			{
-				string2Int(s, num);
-				if(i == 11)
-				{
-					temp->setUserID(num);
-					cout << i << " " <<temp->getUserID() << endl;
-					vector<HashNode> test;
-					test.push_back(*temp);
-					//hashMap.insert((longint)*num, test);
-	
-					delete temp;
-					delete num;
-					//stored value will not be deleted, checked.
-					cout << i << " " <<test[test.size() - 1].getUserID() << endl;
-					cout << "7" << "  " << test[test.size() - 1].pFlag(7) << endl;	
-					cout << "2" << " " << test[test.size() - 1].getURL() << endl;
-				}else
-				{
-					temp->pFlag(i) = *num;
-					cout << i << "  " << temp->pFlag(i) << endl;
-				}
-			}
+			ss >> temp->getElement(i);
+			//insert(hashMap, key, temp);
+			//if(i == 11)delete temp;
+			cout << i << " " << temp->getElement(i) << endl; 
+
 			i++;
 		}
 	}
 	ifs.close();
-
-    //記得要分段偵錯
-    //輸入所有資料
-    //自己建unordered map，存入資料
-    //實作四個function
-
 	return 0;
 }
+
+/*bool insert(_HashMap& hashMap, int* n, HashNode* node)
+{
+	_HashMap::hasher fn = hashMap.hash_function();
+	int k = *n;
+
+	cout << *n << " - " << fn( k ) << endl;
+	//longint flag = hashMap[ fn( (longint)*n ) ];
+	if( flag != 0)
+	{
+		vector<HashNode> test;
+		test.push_back(*node);
+		hashMap.insert( pair<longint, vector<HashNode>>( (longint)*n, test ) );
+		return true;
+	}else
+	{
+		return false;
+	}
+	return false;
+
+}*/
 
 bool string2Int(const string& str, int* num)
 {

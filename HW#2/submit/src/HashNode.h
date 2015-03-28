@@ -4,7 +4,6 @@
 #include <string>
 using namespace std; //std::string
 
-typedef unsigned long long int longint; 
 //to prevent UserID, key from overflowing
 
 class HashNode {
@@ -12,27 +11,21 @@ class HashNode {
 public:
 	HashNode(){};
 	
-	int& pFlag(const int);
-	void setURL(string url){	DisplayURL = url;	}
-	void setUserID(int* id){	UserID = (longint)*id;	}
-	string getURL(){	return DisplayURL;	}
-	longint getUserID(){	return UserID;	}
+	string& getElement(const int i);
 
 protected:
-
-	int Click;
-	int Impression;
+	string Click;
+	string Impression;
 	string DisplayURL;
-	int AdID;
-	int AdvertiserID;
-	int Depth;
-	int Position;
-	int QueryID;
-	int KeywordID;
-	int TitleID;
-	int DescriptionID;
-	longint UserID;
-	longint key;
+	string AdID;
+	string AdvertiserID;
+	string Depth;
+	string Position;
+	string QueryID;
+	string KeywordID;
+	string TitleID;
+	string DescriptionID;
+	string UserID;
 
 };
 #endif
