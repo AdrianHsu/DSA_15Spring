@@ -2,6 +2,8 @@
 #include <fstream>
 #include <sstream>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
 #include "src/HashMap.h"
 #include "src/HashNode.h"
@@ -12,30 +14,16 @@
 
 using namespace std;
 typedef unsigned long long int longInt; //-2^(64-1) ~ 2^(64-1)-1
+//typedef unordered_map<longint, vector< HashNode > > _HashMap;
 
-void import(HashMap &, const string& );
 bool string2Int(const string& , int*);
-
-
 
 int main()
 {
-	HashMap hashMap;
-	import( hashMap , "testdata.txt");
+	_HashMap hashMap;
+	string path =  "test_1000.txt";
 
-    //記得要分段偵錯
-    //輸入所有資料
-    //自己建unordered map，存入資料
-    //實作四個function
-
-
-	return 0;
-}
-
-
-void import(HashMap &hashMap, const string& path)
-{
-	//inport all data into hash map
+	//import
 	ifstream ifs;
 	ifs.open( path.c_str(), ifstream::in);
 	if(!ifs.is_open())
@@ -46,7 +34,7 @@ void import(HashMap &hashMap, const string& path)
 	{
 		istringstream ss(line);
 		string s;
-		HashNode* temp = new HashNode; //pointer will dissapear
+		HashNode* temp = new HashNode;
 		int* num = new int;
 		int i = 0;
 		while( i < 12 )
@@ -64,7 +52,16 @@ void import(HashMap &hashMap, const string& path)
 				{
 					temp->setUserID(num);
 					cout << i << " " <<temp->getUserID() << endl;
-					//hashMap.put(const int* num, const HashNode* temp)//記得要在function里把 (longint)*num
+					vector<HashNode> test;
+					test.push_back(*temp);
+					//hashMap.insert((longint)*num, test);
+	
+					delete temp;
+					delete num;
+					//stored value will not be deleted, checked.
+					cout << i << " " <<test[test.size() - 1].getUserID() << endl;
+					cout << "7" << "  " << test[test.size() - 1].pFlag(7) << endl;	
+					cout << "2" << " " << test[test.size() - 1].getURL() << endl;
 				}else
 				{
 					temp->pFlag(i) = *num;
@@ -75,6 +72,13 @@ void import(HashMap &hashMap, const string& path)
 		}
 	}
 	ifs.close();
+
+    //記得要分段偵錯
+    //輸入所有資料
+    //自己建unordered map，存入資料
+    //實作四個function
+
+	return 0;
 }
 
 bool string2Int(const string& str, int* num)
