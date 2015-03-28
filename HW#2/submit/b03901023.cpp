@@ -46,7 +46,7 @@ void import(HashMap &hashMap, const string& path)
 	{
 		istringstream ss(line);
 		string s;
-		HashNode* temp = new HashNode;
+		HashNode* temp = new HashNode; //pointer will dissapear
 		int* num = new int;
 		int i = 0;
 		while( i < 12 )
