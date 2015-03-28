@@ -2,6 +2,7 @@
 #define HASHMAP_H
 
 #include "HashNode.h"
+#include "Entry.h"
 #include "vector"
 
 using namespace std;
@@ -21,7 +22,9 @@ public:
 	void profit(double, double);
 
 protected:
-
+	typedef vector< Entry > Bucket;
+	typedef vector< Bucket > Bucket_Array;
+	Bucket_Array unordered_map;
 
 };
 #endif

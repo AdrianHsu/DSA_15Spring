@@ -13,9 +13,8 @@ public:
 	HashNode(){};
 	
 	int& pFlag(const int);
-	void setKey(){	key = UserID;	}
 	void setURL(string url){	DisplayURL = url;	}
-	void setUserID(longint id){	UserID = id;	}
+	void setUserID(int* id){	UserID = (longint)*id;	}
 	string getURL(){	return DisplayURL;	}
 	longint getUserID(){	return UserID;	}
 
