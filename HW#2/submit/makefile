@@ -1,5 +1,5 @@
 target = b03901023 ./src/HashNode ./src/Entry
-CPPFLAGS = -O2 -std=c++11 -Wall -time
+CPPFLAGS = -O2 -g -std=c++11 -Wall
 
 all: $(target)
 
