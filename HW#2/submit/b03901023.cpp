@@ -12,13 +12,32 @@
 
 #define _TOTAL_LINE 149639105
 //#define _HASH_MAX  134217728 //2^27
-#define _HASH_MAX 9999999999 //suppose key is at most 10 bits
+#define _HASH_MAX    25000000 //suppose unordered_mapered_maps are at most 20000000(apprpximately)
 
+/*
+terminate called after throwing an instance of 'std::bad_alloc'
+  what():  std::bad_alloc
+已經終止
+
+real    7m27.701s
+user    6m36.376s
+sys     0m51.312s
+*/
+/*
+TOTAL_LINE: 130000000
+MAP_SIZE: 18155182
+
+real    8m56.347s
+user    8m6.852s
+sys     0m49.444s
+
+*/
 using namespace std;
-typedef unordered_map<string, vector<HashNode>> _HashMap;
-typedef unsigned long long int longint;
+typedef unordered_map< string, vector<HashNode> > _HashMap;
+typedef unsigned int longint;
 
 longint string2Int(const string&, longint&);
+longint string2Int(const string&);
 double string2Double(const string&);
 
 string int2String(longint &);
@@ -31,8 +50,9 @@ static _HashMap hashMap;
 int main()
 {
 
-	string path = "kddcup2012track2_7924321.txt";
-	//string path =  "test_235466.txt";
+	//string path = "/tmp2/KDDCup2012/track2/kddcup2012track2.txt";
+	//string path = "kddcup2012track2_7924321.txt";
+	string path =  "test_235466.txt";
 
 	//import
 	ifstream ifs;
@@ -44,41 +64,42 @@ int main()
 	while (getline(ifs, line)) //getline() reads from ifs a line, and store it into "line"
 	{
 		istringstream ss(line);
-		HashNode* temp = new HashNode;
+		HashNode temp;
 
 		int i = 0;
 		while ( i < 12 )
 		{
-			ss >> temp->getElement(i);
+			ss >> temp.getElement(i);
 			if (i == 11)
 			{
-				string key = temp->getElement(11);
-				temp->setKey(key);
-				temp->setd_click(string2Double(temp->getElement(0)));
-				temp->setd_impression(string2Double(temp->getElement(1)));
+				string key = temp.getElement(11);
+				temp.setKey(key);
+				temp.setd_click(string2Double(temp.getElement(0)));
+				temp.setd_impression(string2Double(temp.getElement(1)));
 				if ( hashMap.count(key) == 0)
 				{
-					vector<HashNode>* _vec = new vector<HashNode>;
-					_vec->push_back(*temp);
-					hashMap.insert( pair<string, vector<HashNode>>( key , *_vec ) );
+					vector<HashNode> _vec;
+					_vec.push_back(temp);
+					hashMap.insert( pair<string, vector<HashNode> >( key , _vec ) );
 				} else
 				{
 					if (key == hashMap[key][0].getKey())
-						hashMap[temp->getKey()].push_back(*temp);
+						hashMap[temp.getKey()].push_back(temp);
 					else
 					{
+						longint tmp = 0;
 						do {
-							longint temp;
-							temp = string2Int(key, temp) + 1;
-							if (temp >= _HASH_MAX)
-								temp = 0;
-							key = int2String(temp);
+							tmp = string2Int(key, tmp) + 1;
+							if (tmp >= _HASH_MAX)
+								tmp = 1;
+							key = int2String(tmp);
 						} while ( hashMap.count(key) != 0 );
 
-						cout << "oops, collision happened!" << endl;
-						temp->setKey(key);//key has been hashed once again
-						vector<HashNode>* _vec = new vector<HashNode>;
-						_vec->push_back(*temp);
+						printf( "oops, collision happened!\n" );
+						temp.setKey(key);//key has been hashed once again
+						vector<HashNode> _vec;
+						_vec.push_back(temp);
+						hashMap.insert( pair<string, vector<HashNode> >( key , _vec ) );
 					}
 				}
 			}
@@ -90,8 +111,6 @@ int main()
 
 	longint _line = 0;
 	for (auto& x : hashMap) {
-		//cout << x.first << ": " << x.second[0].getElement(2)<< endl;
-		//cout << "size: " << x.second.size() << endl;
 		_line += x.second.size();
 	}
 	get("6231944", "20157628", "0", "3", "3");//(0, 1)
@@ -101,11 +120,12 @@ int main()
 	clicked("67385"); //line 227151
 	impressed("490234", "86056");
 	impressed("67385", "388585"); //line 67385, 227370
+	impressed("55984", "872615");
 	double a = 0;
-	profit(a, 2);
+	profit(a, 1.5);
 
-	cout << "TOTAL_LINE: " << _line << endl;
-	cout << "MAP_SIZE: " << hashMap.size() << endl;
+	cout << "TOTAL_LINE: " <<  _line << endl;
+	printf( "MAP_SIZE: %u\n", hashMap.size());
 	return 0;
 }
 
@@ -131,6 +151,17 @@ double string2Double(const string& str)
 	}
 	return (double)num;
 }
+longint string2Int(const string& str)
+{
+	longint num = 0;
+	for (longint i = 0; i < str.size(); i++) {
+		if (isdigit(str[i])) {
+			num *= 10;
+			num += int(str[i] - '0');
+		}
+	}
+	return num;
+}
 string int2String(longint &i) {
 
 	string s;
@@ -147,9 +178,9 @@ void get(string u, string a, string q, string p, string d)
 	while (i < hashMap[u].size())
 	{
 		if (hashMap[u][i].getElement(3) == a && hashMap[u][i].getElement(7) == q
-		 && hashMap[u][i].getElement(6) == p && hashMap[u][i].getElement(5) == d)
+		        && hashMap[u][i].getElement(6) == p && hashMap[u][i].getElement(5) == d)
 		{
-			cout << "(" << hashMap[u][i].getElement(0) << ", " << hashMap[u][i].getElement(1) << ")" << endl;
+			printf( "(%s, %s)\n", hashMap[u][i].getElement(0).c_str(), hashMap[u][i].getElement(1).c_str());
 			//break; // maybe more than one set
 		}
 		i++;
@@ -165,13 +196,12 @@ void clicked(string u)
 	{
 		longint temp;
 		if ( string2Int(hashMap[u][i].getElement(0), temp) > 0)
-			cout << "(" << hashMap[u][i].getElement(3) << ", " << hashMap[u][i].getElement(7) << ")" << endl;
+			printf( "(%s, %s)\n", hashMap[u][i].getElement(3).c_str(), hashMap[u][i].getElement(7).c_str());
 	}
 }
 void impressed(string u1, string u2)
 {
 	if (hashMap.count(u1) == 0 || hashMap.count(u2) == 0) return;
-
 	if (hashMap[u1].size() < hashMap[u2].size())
 	{
 		string temp = u2;
@@ -185,14 +215,14 @@ void impressed(string u1, string u2)
 	int a[size_MAX];
 	for (int i = 0, j = 0; i < size_MAX; i++)
 	{
-		longint temp;
-		if (string2Int(hashMap[u1][i].getElement(1), temp) > 0)
+		if (string2Int(hashMap[u1][i].getElement(1)) > 0)
 		{
 			s[j] = hashMap[u1][i].getElement(3);
 			a[i] = 1;
 			j++;
 		}
 	}
+	vector<HashNode*> vec_Ptr;
 	for (int k1 = 0; k1 < size_MAX; k1++)
 	{
 		for (int k2 = 0; k2 < size_MIN; k2++)
@@ -200,21 +230,42 @@ void impressed(string u1, string u2)
 			if (s[k1] == hashMap[u2][k2].getElement(3))
 			{
 				a[k1]++;
+				HashNode* temp;
+				temp = &hashMap[u2][k2];
+				vec_Ptr.push_back(temp);
 			}
 		}
 	}
-	for (int i = 0; i < size_MAX; i++)
+
+	longint i, j, k;
+	for (k = vec_Ptr.size() / 2; k > 0; k /= 2) {
+		for (i = k; i < vec_Ptr.size(); i++) {
+
+			HashNode* temp = vec_Ptr[i];
+			for (j = i; j >= k; j -= k) {
+
+				if (string2Int(temp->getElement(3)) < string2Int(vec_Ptr[j - k]->getElement(3)))
+					vec_Ptr[j] = vec_Ptr[j - k];
+				else
+					break;
+			}
+			vec_Ptr[j] = temp;
+		}
+	}
+	for (i = 0; i < vec_Ptr.size(); i++)
 	{
-		if (a[i] > 1)
-			cout  << hashMap[u1][i].getElement(3)  << "\t" << hashMap[u1][i].getElement(2)  << "\t" << hashMap[u1][i].getElement(4) << "\t"
-			      << hashMap[u1][i].getElement(8)  << "\t" << hashMap[u1][i].getElement(9)  << "\t" << hashMap[u1][i].getElement(10) << endl;
+		printf("%s\t%s\t%s\t", vec_Ptr[i]->getElement(3).c_str(),
+		       vec_Ptr[i]->getElement(2).c_str(), vec_Ptr[i]->getElement(4).c_str());
+		printf("%s\t%s\t%s\n", vec_Ptr[i]->getElement(8).c_str(),
+		       vec_Ptr[i]->getElement(9).c_str(), vec_Ptr[i]->getElement(10).c_str());
 	}
 }
 
 void profit(double a, double theta)
 {
-	unsigned int i;
+	longint i, j, temp, k;
 	double t0, t1;
+	vector<longint> sorted_ID;
 	for (auto& x : hashMap) {
 
 		t0 = 0.0, t1 = 0.0;
@@ -225,6 +276,21 @@ void profit(double a, double theta)
 		}
 		a = t0 / t1;
 		if (a >= theta)
-			cout << "Profit UserID: " << x.second[0].getKey() << endl;
+			sorted_ID.push_back(string2Int(x.second[0].getElement(11)));
 	}
+	//sorting, using shell sort
+	for (k = sorted_ID.size() / 2; k > 0; k /= 2) {
+		for (i = k; i < sorted_ID.size(); i++) {
+			temp = sorted_ID[i];
+			for (j = i; j >= k; j -= k) {
+				if (temp < sorted_ID[j - k])
+					sorted_ID[j] = sorted_ID[j - k];
+				else
+					break;
+			}
+			sorted_ID[j] = temp;
+		}
+	}
+	for (i = 0; i < sorted_ID.size(); i++)
+		printf("%u\n", sorted_ID[i]);
 }
