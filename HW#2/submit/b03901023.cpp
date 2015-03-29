@@ -8,7 +8,7 @@
 #include <utility>
 #include <cmath>
 
-#include "src/HashNode.h"
+#include "HashNode.h"
 
 #define _TOTAL_LINE 149639105
 //#define _HASH_MAX  134217728 //2^27

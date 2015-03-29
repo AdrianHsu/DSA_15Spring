@@ -16,10 +16,11 @@ public:
 	double getd_click(){return d_click;}
 	double getd_impression(){return d_impression;}
 protected:
-	string _key;
 	double d_click;
 	double d_impression;
 
+	string _key;
+	
 	string Click;
 	string Impression;
 	string DisplayURL;

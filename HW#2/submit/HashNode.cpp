@@ -1,6 +1,4 @@
-#include <iostream>
 #include "HashNode.h"
-using namespace std;
 
 string& HashNode::getElement(const int i) { //an easier way to access class members
     
