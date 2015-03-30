@@ -1,12 +1,12 @@
 #include "HashNode.h"
 
-string& HashNode::getElement(const int i) { //an easier way to access class members
+longint& HashNode::getElement(const int i) { //an easier way to access class members
     
     switch(i){ //protected members
     default:
     case  0:    return Click;
     case  1:    return Impression;
-    case  2:    return DisplayURL;
+    //case  2:    return DisplayURL;
     case  3:    return AdID;
     case  4:    return AdvertiserID;
     case  5:    return Depth;
