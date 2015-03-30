@@ -35,6 +35,7 @@ int main()
 	//absolutely string path
 	string path = "/tmp2/KDDCup2012/track2/kddcup2012track2.txt";
 
+
 	if(import(path)) //if import data successfully
 		printf("DONE!\n");
 	
@@ -73,8 +74,9 @@ bool import(string& path)
 		{
 			string str;
 			ss >> str;
-			temp.getElement(i) = string2Int(str); //.getElement(i) is longint
-			if(i == 2) 
+			if(i != 2)temp.getElement(i) = string2Int(str); //.getElement(i) is longint
+			
+			if(i == 2)
 				temp.setURL(str); //URL is a string
 			else if (i == 11)
 			{
@@ -82,6 +84,7 @@ bool import(string& path)
 				temp.setKey(key);
 				if ( hashMap.count(key) == 0) //hashMap[key] is empty, with no vector
 				{	// use .count() since unordered_map doesn't have .empty()
+					
 					vector<HashNode> _vec;
 					_vec.push_back(temp);
 					hashMap.insert( pair<string, vector<HashNode> >( key , _vec ) );
@@ -147,6 +150,7 @@ string int2String(longint &i) {
 }
 double string2Double(const string& str)
 {
+
 	longint num = 0;
 	for (longint i = 0; i < str.size(); i++) {
 		if (isdigit(str[i])) {
@@ -254,13 +258,16 @@ void profit(double a, double theta)
 	vector<longint> sorted_ID;
 	for (auto& x : hashMap) {
 
-		t0 = 0.0, t1 = 0.0;
+		t0 = 0.0;
+		t1 = 0.0;
 		for (i = 0; i < x.second.size(); i++)
-		{
-			t0 += (double)x.second[i].getElement(0);
-			t1 += (double)x.second[i].getElement(1);
+		{		
+			t0 += x.second[i].getElement(0);
+			t1 += x.second[i].getElement(1);
 		}
-		a = t0 / t1;
+		if(t1 == 0) a = 0;
+		else
+			a = t0 / t1;
 		if (a >= theta)
 			sorted_ID.push_back(x.second[0].getElement(11));
 	}
