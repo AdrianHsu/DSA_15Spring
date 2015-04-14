@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <ctime>
+#include <algorithm>
 #include <fstream>
 #include <sstream>
 #include <cstring>
@@ -22,7 +24,17 @@ longint string2Int(const string&, longint&);
 longint string2Int(const string&);
 string int2String(longint &);
 double string2Double(const string&);
-
+bool cmp(HashNode& a, HashNode& b) //for impressed 
+{
+	return a.getElement(3) < b.getElement(3);
+}
+bool cmp2(HashNode* a, HashNode* b) //for clicked
+{
+	if(a->getElement(3) == b->getElement(3))
+		return a->getElement(7) < b->getElement(7);
+	else
+		return a->getElement(3) < b->getElement(3);
+}
 void get(longint, longint, longint, longint, longint);
 void clicked(longint);
 void impressed(longint, longint);
@@ -40,7 +52,7 @@ int main(int argc, char* argv[])
 
 	if (import(path)) //if import data successfully
 	{
-
+		//printf("IMPORT DONE!\n");
 		char str[10];
 		while(true)
 		{
@@ -72,7 +84,7 @@ int main(int argc, char* argv[])
 			}
 			else if(strcmp(str , "quit") == 0)
 			{
-				printf("# leave the program\n");
+				//printf("# leave the program\n");
 				break;
 			}
 		}
@@ -82,6 +94,7 @@ int main(int argc, char* argv[])
 
 bool import(const char* path)
 {
+	//clock_t begin = clock();
 	//import data into unordered map
 	ifstream ifs;
 	ifs.open( path, ifstream::in); // .open() receives char*, not string
@@ -109,7 +122,7 @@ bool import(const char* path)
 			{
 				string key = str;
 				temp.setKey(key);
-				if ( hashMap.count(key) == 0) //hashMap[key] is empty, with no vector
+				if ( hashMap.count(key) == 0) //hashMap[key] is empty, with no vectors
 				{	// use .count() since unordered_map doesn't have .empty()
 
 					vector<HashNode> _vec;
@@ -143,6 +156,8 @@ bool import(const char* path)
 		}
 	}
 	ifs.close();
+	//clock_t end = clock();
+	//printf("%lf\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	return true;
 }
 longint string2Int(const string& str, longint& num)
@@ -189,6 +204,7 @@ double string2Double(const string& str)
 }
 void get(longint _u, longint a, longint q, longint p, longint d)
 {
+	//clock_t begin = clock();
 	string u = int2String(_u);
 	if (hashMap.count(u) == 0) return;
 
@@ -206,10 +222,13 @@ void get(longint _u, longint a, longint q, longint p, longint d)
 	printf("********************\n");
 	printf( "%u %u\n", _click, _impression);
 	printf("********************\n");
+	//clock_t end = clock();
+	//printf("%lf\n", (double)(end - begin) / CLOCKS_PER_SEC);
 	return;
 }
 void clicked(longint _u)
 {
+	//clock_t begin = clock();
 	string u = int2String(_u);
 	if (hashMap.count(u) == 0) return;
 
@@ -224,52 +243,32 @@ void clicked(longint _u)
 		}
 	}
 	//If the AdIDs are the same, then sort with increasing QueryID order.
-	//using insertion sort
-	longint i, j;
-	HashNode* tmp;
-	for (i = 1; i < vec_Ptr.size(); i++) {
-		j = i;
-		while (j > 0 && vec_Ptr[j - 1]->getElement(3) >= vec_Ptr[j]->getElement(3)) {
-
-			tmp = vec_Ptr[j];
-			if (vec_Ptr[j - 1]->getElement(3) > vec_Ptr[j]->getElement(3))
-			{
-				vec_Ptr[j] = vec_Ptr[j - 1];
-				vec_Ptr[j - 1] = tmp;
-				j--;
-			}
-			else
-			{
-				if (vec_Ptr[j - 1]->getElement(7) > vec_Ptr[j]->getElement(7))
-				{
-					vec_Ptr[j] = vec_Ptr[j - 1];
-					vec_Ptr[j - 1] = tmp;
-					j--;
-				}
-				else
-					j--; //or break;
-			}
-		}
-	}
-	for(i = 0; i < vec_Ptr.size(); i++)
-	{
-		for(j = i + 1; j < vec_Ptr.size(); j++)
-		{
-			if (vec_Ptr[i]->getElement(3) == vec_Ptr[j]->getElement(3) &&
-					vec_Ptr[i]->getElement(7) == vec_Ptr[j]->getElement(7))
-			{	//No duplicated results
-				vec_Ptr.erase(vec_Ptr.begin() + j); //delete vec_Ptr[j], size--;
-				j--;
-			} 
-		}
-	}
+	sort(vec_Ptr.begin(), vec_Ptr.end(), cmp2);
 	printf("********************\n");
+	longint _AdID = 0;
+	longint _QueryID = 0;
 	for (longint i = 0; i < vec_Ptr.size(); i++)
-		printf("%u %u\n", vec_Ptr[i]->getElement(3), vec_Ptr[i]->getElement(7));
+	{
+		if( _AdID == vec_Ptr[i]->getElement(3) &&
+			_QueryID == vec_Ptr[i]->getElement(7) )
+		{
+			continue;
+		}
+		else
+		{
+			printf("%u %u\n", vec_Ptr[i]->getElement(3), vec_Ptr[i]->getElement(7));
+			_AdID = vec_Ptr[i]->getElement(3);
+			_QueryID = vec_Ptr[i]->getElement(7);
+		}
+	}
 	printf("********************\n");
+
+	//clock_t end = clock();
+	//printf("%lf\n", (double)(end - begin) / CLOCKS_PER_SEC);
 }
 void impressed(longint u_1, longint u_2)
 {
+	//clock_t begin = clock();
 	string u1 = int2String(u_1);
 	string u2 = int2String(u_2);
 	if (hashMap.count(u1) == 0 || hashMap.count(u2) == 0) return;
@@ -279,50 +278,35 @@ void impressed(longint u_1, longint u_2)
 		u2 = u1;
 		u1 = temp;
 	}
-	int size_MAX = hashMap[u1].size();
-	int size_MIN = hashMap[u2].size();
+	vector<HashNode> v1 = hashMap[u1];
+	vector<HashNode> v2 = hashMap[u2];
 
-	longint s[size_MAX];
-	for (int i = 0, j = 0; i < size_MAX; i++)
-	{
-		if (hashMap[u1][i].getElement(1) > 0)
-		{
-			s[j] = hashMap[u1][i].getElement(3);
-			j++;
-		}
-	}
+	sort(v1.begin(), v1.end(), cmp);
+	sort(v2.begin(), v2.end(), cmp);
+
 	vector<HashNode*> vec_Ptr;
-	for (int k1 = 0; k1 < size_MAX; k1++)
-	{
-		for (int k2 = 0; k2 < size_MIN; k2++)
-		{
-			if (s[k1] == hashMap[u2][k2].getElement(3) && hashMap[u2][k2].getElement(1) > 0)
-			{
-				HashNode* temp;
-				temp = &hashMap[u2][k2];
-				vec_Ptr.push_back(temp);
-			}
-		}
-	}
 	longint i, j;
-	HashNode* tmp;
-	for (i = 1; i < vec_Ptr.size(); i++) {
-		j = i;
-		while (j > 0 && vec_Ptr[j - 1]->getElement(3) > vec_Ptr[j]->getElement(3)) {
-
-			tmp = vec_Ptr[j];
-			vec_Ptr[j] = vec_Ptr[j - 1];
-			vec_Ptr[j - 1] = tmp;
-			j--;
+	for (i = 0; i < v1.size(); i++)
+	{
+		for (j = 0; j < v2.size(); j++)
+		{
+			if (v1[i].getElement(3) == v2[j].getElement(3))
+			{
+				if( v1[i].getElement(1) > 0 )
+					vec_Ptr.push_back(&v1[i]);					
+				if( v2[j].getElement(1) > 0 )
+					vec_Ptr.push_back(&v2[j]);
+			}
+			else if(v1[i].getElement(3) < v2[j].getElement(3))
+				break;
 		}
 	}
 	for (i = 0; i < vec_Ptr.size(); i++)
 	{
-		for(j = i + 1; j < vec_Ptr.size(); j++)
+		j = i + 1;
+		while(j < vec_Ptr.size() && vec_Ptr[j]->getElement(3) == vec_Ptr[i]->getElement(3))
 		{
-		
-			if (vec_Ptr[j]->getElement(3) == vec_Ptr[i]->getElement(3) &&
-                vec_Ptr[j]->getURL() == vec_Ptr[i]->getURL() && //getURL().c_str() not working
+			if (vec_Ptr[j]->getURL() == vec_Ptr[i]->getURL() && //getURL().c_str() not working
 			    vec_Ptr[j]->getElement(4) == vec_Ptr[i]->getElement(4) &&
 			    vec_Ptr[j]->getElement(8) == vec_Ptr[i]->getElement(8) &&
 			    vec_Ptr[j]->getElement(9) == vec_Ptr[i]->getElement(9) &&
@@ -330,8 +314,8 @@ void impressed(longint u_1, longint u_2)
 			{	//No duplicated results
 				vec_Ptr.erase(vec_Ptr.begin() + j); //delete vec_Ptr[j], size--;
 				j--;
-
 			}
+			j++;
 		}
 	}
 	i = 0;
@@ -343,16 +327,18 @@ void impressed(longint u_1, longint u_2)
 		while(ID == vec_Ptr[i]->getElement(3) && i < vec_Ptr.size())
 		{
 			printf("\t%s %u ", vec_Ptr[i]->getURL().c_str(), vec_Ptr[i]->getElement(4));
-			printf("%u %u %u\n", vec_Ptr[i]->getElement(8),
-		    	   vec_Ptr[i]->getElement(9), vec_Ptr[i]->getElement(10));
+			printf("%u %u %u\n", vec_Ptr[i]->getElement(8), vec_Ptr[i]->getElement(9), vec_Ptr[i]->getElement(10));
 			i++;
 		}
 	}
 	printf("********************\n");
+	//clock_t end = clock();
+	//printf("%lf\n", (double)(end - begin) / CLOCKS_PER_SEC);
 }
 
 void profit(longint a, double theta)
 {
+	//clock_t begin = clock();
 	longint i, j, temp, k;
 	double t0, t1, total;
 	vector<longint> sorted_ID;
@@ -392,4 +378,6 @@ void profit(longint a, double theta)
 	for (i = 0; i < sorted_ID.size(); i++)
 		printf("%u\n", sorted_ID[i]);
 	printf("********************\n");
+	//clock_t end = clock();
+	//printf("%lf\n", (double)(end - begin) / CLOCKS_PER_SEC);
 }
