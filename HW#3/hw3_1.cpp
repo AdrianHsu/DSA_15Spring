@@ -17,7 +17,7 @@ bool is_operator(char);
 bool is_operator(string);
 bool right_associate(string);
 
-bool calc(const string , int&);
+bool input_queue(queue< string >, const string);
 
 int main()
 {
@@ -29,8 +29,8 @@ int main()
 
     while( getline(cin, input))
     {
-        int output = 0;
-        if( calc(input,output) )
+        queue< string > my_queue;
+        if( input_queue(my_queue, input) )
         {
             //printf("%s\n", input.c_str());
         }
@@ -82,7 +82,7 @@ bool is_digit(char d)
     else
         return false;
 }
-bool is_operator(char op)
+bool is_operator(char op) //將兩個is_operator 合併
 {
     if(op == '!' || op == '*' || op == '/' || op == '%' || op == '+' ||
        op == '~' || op == '-' || op == '&' || op == '^' || op == '|')
@@ -104,12 +104,10 @@ bool right_associate(string op)
     else
         return false;
 }
-bool calc(const string in, int& out)
+bool input_queue(queue< string > my_queue, const string in)
 {
-    queue< string > my_queue;
-    stack< string > op_stack;
     int i = 0;
-
+    stack< string > op_stack;
     while( i < in.length() )
     {
         if(in[i] == ' ')
