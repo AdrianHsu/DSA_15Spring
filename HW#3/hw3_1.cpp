@@ -37,12 +37,14 @@ int main()
             while(!p_queue.empty())
             {
                 if( p_queue.front() == "+u")
-                    printf("+ ");
+                    printf("+");
                 else if( p_queue.front() == "-u")
-                    printf("- ");
+                    printf("-");
                 else
-                    printf("%s ", p_queue.front().c_str());
+                    printf("%s", p_queue.front().c_str());
                 p_queue.pop();
+                if(!p_queue.empty())
+                    printf(" ");
             }
             printf("\n");
             printf("RESULT: %d\n", result(my_queue));
@@ -157,7 +159,7 @@ void compare(queue< string >& my_queue, stack< string >& op_stack, const string 
 {
     if(right_associate(_op))
     {
-        while(op_precedence(_op) >= op_precedence(op_stack.top()))
+        while(op_precedence(_op) > op_precedence(op_stack.top()))
         {
             my_queue.push(op_stack.top());
             op_stack.pop();
