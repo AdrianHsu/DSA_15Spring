@@ -15,19 +15,17 @@ int op_precedence( string );
 bool is_digit(char);
 bool is_operator(string);
 bool right_associate(string);
+bool is_unary_op(string);
 int string2Int(const string& );
 string int2String(const int& );
 
-bool input_queue(queue< string > &, const string);
 void compare(queue< string > &, stack<string > &, const string);
+bool input_queue(queue< string > &, const string);
+int result(queue< string >);
 
 int main()
 {
     string input; 
-    //char s[] = "-u";
-    //string op = s;
-    //if(op == "-u") printf("%s\n", op.c_str());
-    //printf("%d",op_precedence(s));
 
     while( getline(cin, input))
     {
@@ -47,6 +45,7 @@ int main()
                 p_queue.pop();
             }
             printf("\n");
+            printf("RESULT: %d\n", result(my_queue));
         }
     }
     return 0;
@@ -66,23 +65,31 @@ int op_precedence(string str)
 
     char op = str[0];
     switch(op)  {
-        
+
         case '!': case '~':
             return 2;
+            break;
         case '*': case '/': case '%':
             return 3;
+            break;
         case '+': case '-':
             return 4;
+            break;
         case '&':
             return 8;
+            break;
         case '^':
             return 9;
+            break;
         case '|':
             return 10;
+            break;
         case '(':
             return 99;
-	    default:
- 	        return op - 'A';
+            break;
+        default:
+            return op - 'A';
+            break;
     }
     return 0; //error
 }
@@ -97,7 +104,7 @@ bool is_operator(string str)
 {
     if(str.size() == 2)
     {
-        if(str == "<<" || str == ">>" || str == "&&" || str == "||")
+        if(str == "<<" || str == ">>" || str == "&&" || str == "||" || str == "+u" || str == "-u")
             return true;
         else
             return false;
@@ -106,7 +113,7 @@ bool is_operator(string str)
     {
         char op = str[0];
         if(op == '!' || op == '*' || op == '/' || op == '%' || op == '+' ||
-           op == '~' || op == '-' || op == '&' || op == '^' || op == '|')
+                op == '~' || op == '-' || op == '&' || op == '^' || op == '|')
             return true;
         else
             return false;
@@ -114,6 +121,13 @@ bool is_operator(string str)
     return false;
 }
 bool right_associate(string op)
+{
+    if(op == "+u" || op == "-u" || op == "!" || op == "~")
+        return true;
+    else
+        return false;
+}
+bool is_unary_op(string op)
 {
     if(op == "+u" || op == "-u" || op == "!" || op == "~")
         return true;
@@ -131,13 +145,37 @@ int string2Int(const string& str)
     }
     return num;
 }
-string int2String(const int &i) {
-
+string int2String(const int &i) 
+{
     string s;
     stringstream ss(s);
     ss << i;
 
     return ss.str();
+}
+void compare(queue< string >& my_queue, stack< string >& op_stack, const string _op) // compare input op with my_queue
+{
+    if(right_associate(_op))
+    {
+        while(op_precedence(_op) >= op_precedence(op_stack.top()))
+        {
+            my_queue.push(op_stack.top());
+            op_stack.pop();
+            if(op_stack.empty())
+                break;
+        } 
+    }
+    else
+    {    
+        while(op_precedence(_op) >= op_precedence(op_stack.top()))
+        {
+            my_queue.push(op_stack.top());
+            op_stack.pop();
+            if(op_stack.empty())
+                break;
+        } 
+    }
+    return;
 }
 bool input_queue(queue< string > & my_queue, const string in)
 {
@@ -173,7 +211,7 @@ bool input_queue(queue< string > & my_queue, const string in)
         if(in.size() > i + 1) //in case that in[i + 1] is garbage 
             _op += in[i + 1];
         bool _2_char = false; // is 2 char operator
-        
+
         //check 2 char operator
         if(is_operator(_op) && in.size() > i + 1) 
         {
@@ -248,14 +286,92 @@ bool input_queue(queue< string > & my_queue, const string in)
     } 
     return true;
 }
-void compare(queue< string >& my_queue, stack< string >& op_stack, const string _op) // compare input op with my_queue
+int result(queue< string > my_queue)
 {
-    while(op_precedence(_op) >= op_precedence(op_stack.top()))
+    stack < int > my_stack;
+    while(!my_queue.empty())
     {
-        my_queue.push(op_stack.top());
-        op_stack.pop();
-        if(op_stack.empty())
-            break;
-    } 
-    return;
+        string op = my_queue.front();
+        if(is_operator(op))
+        {
+            my_queue.pop();
+            int r_val = my_stack.top();
+            
+            my_stack.pop();
+            if(is_unary_op(op))
+            {
+                if(op == "+u")
+                    r_val *= (+1);
+                else if(op == "-u")
+                    r_val *= (-1);
+                else if(op == "!")
+                    r_val = !(r_val);
+                else if(op == "~")
+                    r_val = ~(r_val);
+                else
+                    printf("ERROR#1\n");
+
+                my_stack.push(r_val);
+            }
+            else //is binary op
+            {
+                int l_val = my_stack.top();
+                int result;
+                my_stack.pop();
+
+                if(op.size() == 1)
+                {
+                    switch(op[0])  {
+                        case '*':
+                            result = l_val * r_val;
+                            break;
+                        case '/':
+                            result = l_val / r_val;
+                            break;
+                        case '%': 
+                            result = l_val % r_val;
+                            break;
+                        case '+':
+                            result = l_val + r_val;
+                            break;
+                        case '-':
+                            result = l_val - r_val;
+                            break;
+                        case '&':
+                            result = l_val & r_val;
+                            break;
+                        case '^':
+                            result = l_val ^ r_val;
+                            break;
+                        case '|':
+                            result = l_val | r_val;
+                            break;
+                        default:
+                            printf("ERROR#2\n");
+                            break;
+                    }
+                }
+                else
+                {
+                    if(op == "<<")
+                        result = l_val << r_val;
+                    else if(op == ">>")
+                        result = l_val >> r_val;
+                    else if(op == "&&")
+                        result = l_val && r_val;
+                    else if(op == "||")
+                        result = l_val || r_val;
+                    else
+                        printf("ERROR#3\n");
+                }
+                my_stack.push(result);
+            }
+        }
+        else
+        {
+            my_stack.push( string2Int( my_queue.front() ) );
+            my_queue.pop();
+        }
+    }
+    return my_stack.top();
 }
