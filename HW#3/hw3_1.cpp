@@ -26,7 +26,6 @@ int result(queue< string >);
 int main()
 {
     string input; 
-
     while( getline(cin, input))
     {
         queue< string > my_queue;
