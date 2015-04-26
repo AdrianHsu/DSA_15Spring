@@ -25,7 +25,16 @@ bool input_queue(queue< string > &, const string);
 int result(queue< string >);
 
 int main()
-{
+{ 
+    //*****the output on those three cases is in the written part*****
+    //testcase 1: 0 + 34 * 1 && (0 << 6) || 5 ^9 + ~1 + - 6 - !0 
+    //testcase 2: 36 * 22 ^ (1 || 1+ -2)
+    //testcase 3: ( 3 + ( ( 22+ !(0)) ^ 3 -2 | -11)^ ~6 *544 %33 >> ~22 && ( (1 ) >>11 <<22)<<5 && -4 ) || 7 - 2
+    
+    //printf("%d\n", 0 + 34 * 1 && (0 << 6) || 5 ^9 + ~1 + - 6 - !0);
+    //printf("%d\n", 36 * 22 ^ (1 || 1+ -2));
+    //printf("%d\n", ( 3 + ( ( 22+ !(0)) ^ 3 -2 | -11)^ ~6 *544 %33 >> ~22 && ( (1 ) >>11 <<22)<<5 && -4 ) || 7 - 2);
+    
     string input; 
     while( getline(cin, input))
     {

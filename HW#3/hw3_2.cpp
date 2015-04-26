@@ -24,10 +24,18 @@ void compare(queue< string >&, stack< string >&, const string);
 bool input_queue(queue< string > &, const string);
 double result(queue< string >);
 
-
 int main()
 {
-    string input; 
+    //*****the output on those three cases is in the written part*****
+    //testcase 1: log( 0.88563 +-0.51537 +-0.17578 + +1.3168+ 0.55399 + 0.58713 -0.59019 - -0.059599* +0.89103)     
+    //testcase 2: exp(0.20286 *-0.37746+ -(0.53997) )* log(1.1245 + sin(1.2)) 
+    //testcase 3: 2.2568-0.063917+ (( 0.35176- +-1.6603- ( sin( -1.8392+0.16571 + 0.74056- -0.79852* + (sqrt(( 1.1172)+0.66085 +0.066148)* -1.1648+ -0.2666 +-1.309 ) ) ) +( -0.12087 *0.20923* 1.0198 +-0.38495+ -0.85675 ))-1.3074)
+
+    //printf("%lf\n",  log( 0.88563 +-0.51537 +-0.17578 + +1.3168+ 0.55399 + 0.58713 -0.59019 - -0.059599* +0.89103));
+    //printf("%lf\n", exp(0.20286 *-0.37746+ -(0.53997) )* log(1.1245 + sin(1.2)) );
+    //printf("%lf\n", 2.2568-0.063917+ (( 0.35176- +-1.6603- ( sin( -1.8392+0.16571 + 0.74056- -0.79852* + (sqrt(( 1.1172)+0.66085 +0.066148)* -1.1648+ -0.2666 +-1.309 ) ) ) +( -0.12087 *0.20923* 1.0198 +-0.38495+ -0.85675 ))-1.3074) );
+
+    string input;
     while( getline(cin, input))
     {
         queue< string > my_queue;
@@ -331,7 +339,7 @@ bool input_queue(queue< string > & my_queue, const string in)
     while(!op_stack.empty())
     {
         //if(op_stack.top() == "(" || op_stack.top() == ")")
-            //return false;
+        //return false;
         my_queue.push(op_stack.top());
         op_stack.pop();
     } 
@@ -369,7 +377,7 @@ double result(queue< string > my_queue)
                 else if(op == "exp")
                     result = exp(r_val);    
                 //else
-                    //printf("ERROR#1\n");
+                //printf("ERROR#1\n");
 
                 my_stack.push(result);
             }
