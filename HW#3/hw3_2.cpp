@@ -198,7 +198,10 @@ bool input_queue(queue< string > & my_queue, const string in)
             else if(_op == "l")
                 op_stack.push("log");
             else if(_op == "p")
+            {
                 op_stack.push("pow");
+                op_stack.push("(");
+            }
             i += 3;
         }
         else if(_op == "s")
@@ -242,7 +245,7 @@ bool input_queue(queue< string > & my_queue, const string in)
                         j--;
                     string tmp; //is_operator receives string, thus not use in[j]
                     tmp += in[j];
-                    if(is_operator(tmp) || in[j] == '(') //not consider more tha 1 char operator
+                    if(is_operator(tmp) || in[j] == '(' || in[j] == ',') //not consider more tha 1 char operator
                     {   
                         _op += "u"; //to differentiate from binary +, -
                         if(!op_stack.empty())
@@ -257,6 +260,38 @@ bool input_queue(queue< string > & my_queue, const string in)
                 if(!op_stack.empty())
                     compare(my_queue, op_stack, _op);
                 op_stack.push(_op);
+            }
+        }
+        if(in[i] == ',')
+        {
+            bool flag = 1;
+            while(flag)
+            {
+                if(op_stack.empty())
+                {
+                    printf("Error: comma mismatched\n");
+                    return false;
+                }
+                if(op_stack.top() != "(")
+                {
+                    my_queue.push(op_stack.top());
+                    op_stack.pop();
+                }
+                else
+                {
+                    flag = 0;
+                    op_stack.pop();
+                    if(!op_stack.empty())
+                    {
+                        string str = op_stack.top();
+                        if(str == "pow") //trivial
+                        {
+                            my_queue.push(op_stack.top());
+                            op_stack.pop();
+                            op_stack.push("(");
+                        }
+                    }
+                }
             }
         }
         if(in[i] == ')')
@@ -295,6 +330,8 @@ bool input_queue(queue< string > & my_queue, const string in)
     }
     while(!op_stack.empty())
     {
+        if(op_stack.top() == "(" || op_stack.top() == ")")
+            return false;
         my_queue.push(op_stack.top());
         op_stack.pop();
     } 
