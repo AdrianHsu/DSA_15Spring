@@ -1,5 +1,6 @@
 #include <iostream>
 #include <iomanip>
+#include <cmath>
 #include <sstream>
 #include <cstdlib>
 #include <cstdio>
@@ -21,6 +22,7 @@ string double2String(const double& );
 
 void compare(queue< string >&, stack< string >&, const string);
 bool input_queue(queue< string > &, const string);
+double result(queue< string >);
 
 
 int main()
@@ -51,7 +53,7 @@ int main()
                     printf(" ");
             }
             printf("\n");
-            //printf("RESULT: %lf\n", result(my_queue));
+            printf("RESULT: %lf\n", result(my_queue));
         }
     }
     return 0;
@@ -91,7 +93,7 @@ bool is_operator(string str)
     if(str.size() > 1)
     {
         if(str == "+u" || str == "-u" || str == "sin" || str == "cos" ||
-           str == "exp" || str == "log" || str == "pow" || str == "sqrt" || str == "fabs")
+                str == "exp" || str == "log" || str == "pow" || str == "sqrt" || str == "fabs")
             return true;
         else
             return false;
@@ -113,9 +115,10 @@ bool right_associate(string op)
     else
         return false;
 }
-bool is_unary_op(string op)
+bool is_unary_op(string str)
 {
-    if(op == "+u" || op == "-u")
+    if(str == "+u" || str == "-u" || str == "sin" || str == "cos" 
+    || str == "log" || str == "sqrt" || str == "fabs" || str == "exp")
         return true;
     else
         return false;
@@ -279,7 +282,7 @@ bool input_queue(queue< string > & my_queue, const string in)
                     {
                         string str = op_stack.top();
                         if( str == "sin" || str == "cos" || str == "exp" || str == "log" 
-                         || str == "pow" || str == "sqrt" || str == "fabs")
+                                || str == "pow" || str == "sqrt" || str == "fabs")
                         {
                             my_queue.push(op_stack.top());
                             op_stack.pop();
@@ -297,4 +300,75 @@ bool input_queue(queue< string > & my_queue, const string in)
     } 
     return true;
 }
+double result(queue< string > my_queue)
+{
+    stack < double > my_stack;
+    while(!my_queue.empty())
+    {
+        string op = my_queue.front();
+        if(is_operator(op))
+        {
+            my_queue.pop();
+            double r_val = my_stack.top();
 
+            my_stack.pop();
+            if(is_unary_op(op))
+            {
+                double result = 0;
+                if(op == "+u")
+                    result = r_val * (+1);
+                else if(op == "-u")
+                    result = r_val * (-1);
+                else if(op == "sin")
+                    result = sin(r_val);
+                else if(op == "cos")
+                    result = cos(r_val);
+                else if(op == "log")
+                    result = log(r_val);
+                else if(op == "sqrt")
+                    result = sqrt(r_val);
+                else if(op == "fabs")
+                    result = fabs(r_val);
+                else if(op == "exp")
+                    result = exp(r_val);    
+                else
+                    printf("ERROR#1\n");
+
+                my_stack.push(result);
+            }
+            else //is binary op
+            {
+                double l_val = my_stack.top();
+                double result = 0;
+                my_stack.pop();
+
+                if(op == "pow")
+                    result = pow(l_val, r_val);
+                else
+                {
+                    switch(op[0])  {
+                        case '*':
+                            result = l_val * r_val;
+                            break;
+                        case '+':
+                            result = l_val + r_val;
+                            break;
+                        case '-':
+                            result = l_val - r_val;
+                            break;
+                        default:
+                            printf("ERROR#2\n");
+                            break;
+                    }
+                }
+                my_stack.push(result);
+            }
+        }
+        else
+        {
+            my_stack.push( string2Double( my_queue.front() ) );
+            my_queue.pop();
+        }
+    }
+    return my_stack.top();
+}
