@@ -118,7 +118,7 @@ bool right_associate(string op)
 bool is_unary_op(string str)
 {
     if(str == "+u" || str == "-u" || str == "sin" || str == "cos" 
-    || str == "log" || str == "sqrt" || str == "fabs" || str == "exp")
+            || str == "log" || str == "sqrt" || str == "fabs" || str == "exp")
         return true;
     else
         return false;
@@ -165,7 +165,7 @@ void compare(queue< string >& my_queue, stack< string >& op_stack, const string 
 }
 bool input_queue(queue< string > & my_queue, const string in)
 {
-    int i = 0;
+    unsigned int i = 0;
     stack < string > op_stack;
     while(i < in.length() )
     {
@@ -219,7 +219,7 @@ bool input_queue(queue< string > & my_queue, const string in)
             else
             {
                 printf("ERROR\n");
-                return false;
+                //return false;
             }
         }else if(_op == "f")
         {
@@ -269,8 +269,8 @@ bool input_queue(queue< string > & my_queue, const string in)
             {
                 if(op_stack.empty())
                 {
-                    printf("Error: comma mismatched\n");
-                    return false;
+                    //printf("Error: comma mismatched\n");
+                    //return false;
                 }
                 if(op_stack.top() != "(")
                 {
@@ -301,8 +301,8 @@ bool input_queue(queue< string > & my_queue, const string in)
             {
                 if(op_stack.empty())
                 {
-                    printf("Error: parentheses mismatched\n");
-                    return false;
+                    //printf("Error: parentheses mismatched\n");
+                    //return false;
                 }
                 if(op_stack.top() != "(")
                 {
@@ -330,8 +330,8 @@ bool input_queue(queue< string > & my_queue, const string in)
     }
     while(!op_stack.empty())
     {
-        if(op_stack.top() == "(" || op_stack.top() == ")")
-            return false;
+        //if(op_stack.top() == "(" || op_stack.top() == ")")
+            //return false;
         my_queue.push(op_stack.top());
         op_stack.pop();
     } 
@@ -368,8 +368,8 @@ double result(queue< string > my_queue)
                     result = fabs(r_val);
                 else if(op == "exp")
                     result = exp(r_val);    
-                else
-                    printf("ERROR#1\n");
+                //else
+                    //printf("ERROR#1\n");
 
                 my_stack.push(result);
             }
@@ -394,7 +394,7 @@ double result(queue< string > my_queue)
                             result = l_val - r_val;
                             break;
                         default:
-                            printf("ERROR#2\n");
+                            //printf("ERROR#2\n");
                             break;
                     }
                 }

@@ -19,6 +19,7 @@ bool is_unary_op(string);
 int string2Int(const string& );
 string int2String(const int& );
 
+void current_status( queue< string > , stack<string > );
 void compare(queue< string > &, stack<string > &, const string);
 bool input_queue(queue< string > &, const string);
 int result(queue< string >);
@@ -138,7 +139,7 @@ bool is_unary_op(string op)
 int string2Int(const string& str)
 {
     int num = 0;
-    for (int i = 0; i < str.size(); i++) {
+    for (unsigned int i = 0; i < str.size(); i++) {
         if (isdigit(str[i])) {
             num *= 10;
             num += int(str[i] - '0');
@@ -154,14 +155,49 @@ string int2String(const int &i)
 
     return ss.str();
 }
+void current_status( queue< string > p_queue, stack< string > op_stack)
+{
+    printf("\t\tCurrent output_queue: ");
+    while(!p_queue.empty())
+    {
+        if( p_queue.front() == "+u")
+            printf("+");
+        else if( p_queue.front() == "-u")
+            printf("-");
+        else
+            printf("%s", p_queue.front().c_str());
+        p_queue.pop();
+        if(!p_queue.empty())
+            printf(" ");
+    }
+    printf("\n\t\tCurrent stack: ");
+    while(!op_stack.empty())
+    {
+        if( op_stack.top() == "+u")
+            printf("+");
+        else if( op_stack.top() == "-u")
+            printf("-");
+        else
+            printf("%s", op_stack.top().c_str());
+        op_stack.pop();
+        if(!op_stack.empty())
+            printf(" ");
+    }
+    printf("\n");
+    return;
+}
+
 void compare(queue< string >& my_queue, stack< string >& op_stack, const string _op) // compare input op with my_queue
 {
     if(right_associate(_op))
     {
         while(op_precedence(_op) > op_precedence(op_stack.top()))
         {
+            printf("compare %s with %s: push %s to my_queue\n",
+                    _op.c_str(), op_stack.top().c_str(), op_stack.top().c_str());
             my_queue.push(op_stack.top());
             op_stack.pop();
+            current_status(my_queue, op_stack);
             if(op_stack.empty())
                 break;
         } 
@@ -170,8 +206,11 @@ void compare(queue< string >& my_queue, stack< string >& op_stack, const string 
     {    
         while(op_precedence(_op) >= op_precedence(op_stack.top()))
         {
+            printf("compare %s with %s: push %s to my_queue\n",
+                    _op.c_str(), op_stack.top().c_str(), op_stack.top().c_str());
             my_queue.push(op_stack.top());
             op_stack.pop();
+            current_status(my_queue, op_stack);
             if(op_stack.empty())
                 break;
         } 
@@ -180,17 +219,18 @@ void compare(queue< string >& my_queue, stack< string >& op_stack, const string 
 }
 bool input_queue(queue< string > & my_queue, const string in)
 {
-    int i = 0;
+    unsigned int i = 0;
     stack< string > op_stack;
+    printf("# transform from indix to postfix\n");
     while( i < in.length() )
     {
-        //space ignore
+        //ignore space
         if(in[i] == ' ')
         {
             i++;
             continue;
         }
-        //digit push directly
+        //push digit directly
         if(is_digit(in[i]))
         {
             string _int;
@@ -200,14 +240,18 @@ bool input_queue(queue< string > & my_queue, const string in)
                 i++;
             }
             i--;
+            printf("encounter %s: push to my_queue\n", _int.c_str());
             my_queue.push(_int);
+            current_status(my_queue, op_stack);
         } 
         string _op;
         _op += in[i]; //char can't be assigned to string
         //judge '(' first
         if(in[i] == '(')
         {
+            printf("encounter (: push to op_stack\n");
             op_stack.push(_op);
+            current_status(my_queue, op_stack);
         }
         if(in.size() > i + 1) //in case that in[i + 1] is garbage 
             _op += in[i + 1];
@@ -218,7 +262,9 @@ bool input_queue(queue< string > & my_queue, const string in)
         {
             if(!op_stack.empty())
                 compare(my_queue, op_stack, _op);
+            printf("encounter %s: push to op_stack\n", _op.c_str());
             op_stack.push(_op);
+            current_status(my_queue, op_stack);
             _2_char = true;
             i++;
         }
@@ -232,7 +278,10 @@ bool input_queue(queue< string > & my_queue, const string in)
             {   
                 if(i == 0) // in[i - 1] might be -1
                 {
-                    op_stack.push(_op + "u"); 
+                    printf("encounter %s (unary): push to op_stack\n", _op.c_str());
+                    op_stack.push(_op + "u");
+                    current_status(my_queue, op_stack);
+
                     _is_binary = 0;
                 }
                 else
@@ -247,7 +296,10 @@ bool input_queue(queue< string > & my_queue, const string in)
                         _op += "u"; //to differentiate from binary +, -
                         if(!op_stack.empty())
                             compare(my_queue, op_stack, _op);
+                        printf("encounter %s (unary): push to op_stack\n", _op.c_str());
                         op_stack.push(_op);
+                        current_status(my_queue, op_stack);
+
                         _is_binary = 0;
                     }
                 }
@@ -256,35 +308,49 @@ bool input_queue(queue< string > & my_queue, const string in)
             {  
                 if(!op_stack.empty())
                     compare(my_queue, op_stack, _op);
+                printf("encounter %s: push to op_stack\n", _op.c_str());
                 op_stack.push(_op);
+                current_status(my_queue, op_stack);
+
             }
         }
         if(in[i] == ')')
         {
+            printf("encounter ): flush the stack to output until meeting '('\n");
             bool flag = 1;
             while(flag)
             {
                 if(op_stack.empty())
                 {
-                    printf("Error: parentheses mismatched\n");
-                    return false;
+                    //printf("Error: parentheses mismatched\n");
+                    //return false;
                 }
                 if(op_stack.top() != "(")
                 {
+                    printf("encounter %s: push into my_queue\n", op_stack.top().c_str());
                     my_queue.push(op_stack.top());
+                    current_status(my_queue, op_stack);
+
                 }
                 else
                     flag = 0;
                 op_stack.pop();
-            } 
+            }
+            printf("encounter (: \n"); 
+            current_status(my_queue, op_stack);
         }
         i++;
     }
+    printf("encounter NOTHING: flush the stack to output\n");
     while(!op_stack.empty())
     {
+        //if(op_stack.top() == "(" || op_stack.top() == ")")
+        //return false;
         my_queue.push(op_stack.top());
         op_stack.pop();
-    } 
+    }
+    current_status(my_queue, op_stack);
+    printf("# postfix expression transforming complete\n");
     return true;
 }
 int result(queue< string > my_queue)
@@ -297,7 +363,7 @@ int result(queue< string > my_queue)
         {
             my_queue.pop();
             int r_val = my_stack.top();
-            
+
             my_stack.pop();
             if(is_unary_op(op))
             {
@@ -309,15 +375,15 @@ int result(queue< string > my_queue)
                     r_val = !(r_val);
                 else if(op == "~")
                     r_val = ~(r_val);
-                else
-                    printf("ERROR#1\n");
+                //else
+                //printf("ERROR#1\n");
 
                 my_stack.push(r_val);
             }
             else //is binary op
             {
                 int l_val = my_stack.top();
-                int result;
+                int result = 0;
                 my_stack.pop();
 
                 if(op.size() == 1)
@@ -348,7 +414,7 @@ int result(queue< string > my_queue)
                             result = l_val | r_val;
                             break;
                         default:
-                            printf("ERROR#2\n");
+                            //printf("ERROR#2\n");
                             break;
                     }
                 }
@@ -362,8 +428,8 @@ int result(queue< string > my_queue)
                         result = l_val && r_val;
                     else if(op == "||")
                         result = l_val || r_val;
-                    else
-                        printf("ERROR#3\n");
+                    //else
+                    //printf("ERROR#3\n");
                 }
                 my_stack.push(result);
             }
