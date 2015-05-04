@@ -4,13 +4,11 @@
 #include <fstream>
 #include <vector>
 
-int tree_predict(double *attr);
-
 using namespace std;
-
-using std::string;
-
+//using std::string;
 #define MAX_FEATURE (1024+1)
+
+int tree_predict(double *attr);
 
 int main(int argc,char** argv) {
   int correct = 0;

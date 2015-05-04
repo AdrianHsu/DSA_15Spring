@@ -5,7 +5,7 @@ Data Structure and Algorithm Homework 4
 
 The first argument of both `tree_predictor.cpp` and `forest_predictor.cpp`
 is the test (prediction) data in the format same as training data, and the
-output is the accuray of the predictor on the test data.
+output is the accuracy of the predictor on the test data.
 
 For example,
 
