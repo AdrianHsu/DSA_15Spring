@@ -199,44 +199,32 @@ void print(vector < Data > data_set, double e)
 }
 void build_tree(vector < Data > data_set, double e, int recur)
 {
+    if(data_set.size() == 1)
+    {
+        for(int i = 0; i < recur; i++)
+            printf("\t");
+        printf("return %d;\n",data_set[0].label);
+        return;
+    }
     int min_idx = 0, min_j = 0, label = 1;
     double min_threshold = 0, min_confusion = 1;
     bool flag = find_threshold(data_set, min_idx, min_j, label, e, min_threshold, min_confusion);
     vector < Data > set_1(data_set.begin(), data_set.begin() + min_j + 1); //[, )
     vector < Data > set_2(data_set.begin() + min_j + 1, data_set.end());
 
-    /*cout << set_1.size() << endl;
-      cout << set_2.size() << endl;
-      cout << data_set[39].attr[0] << endl;
-      cout << set_1[39].attr[0] << endl;
-      cout << set_2[0].attr[0] << endl;*/
     if(!flag)
     {
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("return %d;\n",label);
-        /*for(int i = 0; i < recur - 1; i++)
-          printf("\t");*/
-        //printf("\n");
         return;
     }
     else
     {
         for(int i = 0; i < recur; i++)
             printf("\t");
-        printf("if(attr[%d] <= %lf)\n", min_idx, min_threshold);
-        if(min_idx == 12 && min_threshold == 6)
-        {    
-            /*cout << "//min_idx: " << min_idx << endl;
-            cout << "//min_j: " << min_j << endl;
-            cout << "//min_threshold: " << min_threshold << endl;
-            cout << "//data_set.size: " << data_set.size() << endl;
-            cout << "//set_1.size: " << set_1.size() << endl;
-            cout << "//set_2.size: " << set_2.size() << endl;
-            cout << "//min_confusion: " << min_confusion << endl;
-            for(int k = 0; k < data_set.size(); k++)
-                cout << "//" << data_set[k].attr[min_idx] << " " << min_idx << endl;*/
-        }
+        printf("if(attr[%d] < %lf)\n", min_idx, min_threshold);
+        
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("{\n");
