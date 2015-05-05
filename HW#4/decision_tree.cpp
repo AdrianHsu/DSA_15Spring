@@ -10,13 +10,13 @@ using namespace std;
 #define MAX_FEATURE (1024+1)
 
 class Data {
-public:
-    Data(int _label, double* features)
-        :attr(features), label(_label), idx(0){};
+    public:
+        Data(int _label, double* features)
+            :attr(features), label(_label), idx(0){};
 
-    double* attr;
-    int label;
-    int idx;
+        double* attr;
+        int label;
+        int idx;
 };
 
 bool cmp(Data& a, Data& b)
@@ -52,7 +52,7 @@ int main(int argc, char** argv)
     erase_it = unique(data_set.begin(), data_set.end(), unique_func);
     data_set.erase(erase_it, data_set.end());
 
-    double epsilon = atoi(argv[2]);
+    double epsilon = atof(argv[2]);
     print(data_set, epsilon);
     /*cout << data_set.size() << endl;
       cout << data_set[1].attr[0] << endl;
@@ -79,50 +79,100 @@ double t_confusion(int c, int d, int e, int f)
     return ( c_add_d / total ) * confusion(c, d) + ( e_add_f / total ) * confusion(e, f) ;
 }
 bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label, 
-                    double e, double &min_threshold, double &min_confusion)
-{
+        double e, double &min_threshold, double &min_confusion)
+{      
+    int a = 0, b = 0, c, d;
+    int zero = 0;
+    bool is_zero = true;
+    for(int j = 0; j < data_set.size(); j++)
+    {
+        if(data_set[j].label == +1) a++;
+        else if(data_set[j].label == -1) b++;
+    }
+    if(confusion(a, b) <= e || a == 0 || b == 0)
+    {
+        label = (a > b? +1 : -1);
+        min_idx = 0;
+        min_j = 0; //don't care
+        min_threshold = 0; //don't care
+        min_confusion = confusion(a, b);
+        return false;
+    }
     for(int i = 0; i < MAX_FEATURE; i++)
     {
-        int a = 0, b = 0, c = 0, d = 0; //aY + bN = (c + d)Y + (e + f)N
+        c = 0; d = 0; //aY + bN = (c + d)Y + (e + f)N
+        is_zero = true;            
         for(int j = 0; j < data_set.size(); j++)
         {
-            data_set[j].idx = i;
-            if(data_set[j].label == +1) a++;
-            else if(data_set[j].label == -1) b++;
+            data_set[j].idx = i;     
+            if(data_set[j].attr[i] != 0) 
+                is_zero = false;
+        }
+        if(is_zero)
+        {
+            //zero++;
+            continue;
         }
         sort(data_set.begin(), data_set.end(), cmp);
         //min_threshold = data_set[0].attr[i] - 1;
-        if(confusion(a, b) <= e || a == 0 || b == 0)
+
+        int total = 0;
+        for(int j = 0; j < MAX_FEATURE; j++)
         {
-            label = (a > b? +1 : -1);
-            min_idx = i;
-            min_j = 0; //don't care
-            min_threshold = 0; //don't care
-            min_confusion = confusion(a, b);
-            return false;
+            bool _total = true;
+            double tmp = data_set[0].attr[j];
+            for(int k = 0; k < data_set.size(); k++)
+                if(tmp != data_set[k].attr[j]) _total = false;
+            if(_total)
+                total++;
         }
+        if(total == MAX_FEATURE)
+            return false;
         for(int j = 0; j < data_set.size(); j++)
         {
+            double tmp = data_set[j].attr[0];
             if(data_set[j].label == +1) c++;
             else if(data_set[j].label == -1) d++;
 
             double t = t_confusion(c, d, a - c, b - d);
+            if(j > 0)
+                if(data_set[j - 1].attr[i] == data_set[j].attr[i])
+                    continue;
             if(t < min_confusion)
             {
                 min_idx = i;
                 min_j = j;
-                if(j >= 0 && (data_set.size() - 1) > j)
-                    min_threshold = (data_set[j].attr[i] + data_set[j + 1].attr[i]) / 2;
-                else if(j == data_set.size() - 1)
-                    min_threshold = data_set[j].attr[i] + 1;
+                min_confusion = t;
+            }
+            else if(t == min_confusion)
+            {
+                //choose from them randomly
+                min_idx = i;
                 min_confusion = t;
             }
         }
     }
+    /*if(zero == data_set.size() - 1) //all set is composed of zero vectors
+      {
+      min_idx = 0;
+      min_j = 0;
+      min_confusion = 0;
+      min_threshold = 0;
+      label = 0;
+      return false;   
+      }*/
     for(int j = 0; j < data_set.size(); j++)
         data_set[j].idx = min_idx;
     sort(data_set.begin(), data_set.end(), cmp);
-    /*cout << min_idx << endl;
+    min_threshold = data_set[0].attr[min_idx] - 1;
+    if(min_j >= 0 && (data_set.size() - 1) > min_j)
+        min_threshold = (data_set[min_j].attr[min_idx] + data_set[min_j + 1].attr[min_idx]) / 2;
+    else if(min_j == data_set.size() - 1)
+        min_threshold = data_set[min_j].attr[min_idx] + 1;
+    
+    /*for(int k = 0; k < data_set.size(); k++)
+        cout << "//" << data_set[k].attr[min_idx] << " " << min_idx << endl;
+      cout << min_idx << endl;
       cout << min_j << endl;
       cout << min_threshold << endl;
       cout << min_confusion << endl;*/
@@ -170,21 +220,21 @@ void build_tree(vector < Data > data_set, double e, int recur)
     int min_idx = 0, min_j = 0, label = 1;
     double min_threshold = 0, min_confusion = 1;
     bool flag = find_threshold(data_set, min_idx, min_j, label, e, min_threshold, min_confusion);
-    vector < Data > set_1(data_set.begin(), data_set.begin() + min_j + 1); //(, ]
+    vector < Data > set_1(data_set.begin(), data_set.begin() + min_j + 1); //[, )
     vector < Data > set_2(data_set.begin() + min_j + 1, data_set.end());
-    
+
     /*cout << set_1.size() << endl;
-    cout << set_2.size() << endl;
-    cout << data_set[39].attr[0] << endl;
-    cout << set_1[39].attr[0] << endl;
-    cout << set_2[0].attr[0] << endl;*/
+      cout << set_2.size() << endl;
+      cout << data_set[39].attr[0] << endl;
+      cout << set_1[39].attr[0] << endl;
+      cout << set_2[0].attr[0] << endl;*/
     if(!flag)
     {
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("return %d;\n",label);
         /*for(int i = 0; i < recur - 1; i++)
-            printf("\t");*/
+          printf("\t");*/
         //printf("\n");
         return;
     }
@@ -193,11 +243,17 @@ void build_tree(vector < Data > data_set, double e, int recur)
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("if(attr[%d] <= %lf)\n", min_idx, min_threshold);
-        
+        /*if(min_idx == 12 && min_threshold == 3)
+        {    
+            cout << "//" << data_set.size() << endl;
+            cout << "//" << set_1.size() << endl;
+            cout << "//" << set_2.size() << endl;
+            cout << "//" << min_confusion << endl;
+        }*/
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("{\n");
-        
+
         build_tree(set_1, e, recur + 1); //left tree
         for(int i = 0; i < recur; i++)
             printf("\t");
@@ -209,7 +265,7 @@ void build_tree(vector < Data > data_set, double e, int recur)
         for(int i = 0; i < recur; i++)
             printf("\t");        
         printf("{\n");
-        
+
         build_tree(set_2, e, recur + 1); //right tree
         for(int i = 0; i < recur; i++)
             printf("\t");     

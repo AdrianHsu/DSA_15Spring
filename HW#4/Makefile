@@ -1,11 +1,13 @@
 CC=g++
 FNAME=heart.train
 PNAME=heart.test
-EPSILON=0.05
+EPSILON=0.1
 T=50
 RM=rm -rf
 
 .PHONY: clean_tree_pred_func clean_forest_pred_func run_tree run_forest predict_tree predict_forest clean
+
+adrian: decision_tree run_decision_tree run_tree
 
 decision_tree: decision_tree.cpp
 	$(CC) decision_tree.cpp -o $@
@@ -28,7 +30,8 @@ predict_tree: tree_predictor.cpp tree_pred_func.cpp
 	$(CC) tree_predictor.cpp tree_pred_func.cpp -o tree_predictor
 	./tree_predictor $(PNAME) > ./tree_prediction.txt
 
-run_tree: predict_tree clean_tree_pred_func
+#run_tree: predict_tree clean_tree_pred_func
+run_tree: predict_tree
 
 predict_forest: forest_predictor.cpp forest_pred_func.cpp $(PNAME)
 	$(CC) forest_predictor.cpp forest_pred_func.cpp -o forest_predictor
