@@ -88,7 +88,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         else if(data_set[i].label == -1)b++;
     }
     min_confusion = confusion(a, b);
-    if(min_confusion <= e || (a == 0 || b == 0))
+    if(min_confusion <= e || a == 0 || b == 0)
     {
         label = (a > b? +1 : -1);
         return false;
@@ -133,7 +133,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
                     j_vector.clear();
             }
             else if(t == min_confusion)
-            {
+           {
                 j_vector.push_back(min_j);
                 min_j = j;
             }
@@ -199,18 +199,9 @@ void print(vector < Data > data_set, double e)
 }
 void build_tree(vector < Data > data_set, double e, int recur)
 {
-    if(data_set.size() == 1)
-    {
-        for(int i = 0; i < recur; i++)
-            printf("\t");
-        printf("return %d;\n",data_set[0].label);
-        return;
-    }
     int min_idx = 0, min_j = 0, label = 1;
     double min_threshold = 0, min_confusion = 1;
     bool flag = find_threshold(data_set, min_idx, min_j, label, e, min_threshold, min_confusion);
-    vector < Data > set_1(data_set.begin(), data_set.begin() + min_j + 1); //[, )
-    vector < Data > set_2(data_set.begin() + min_j + 1, data_set.end());
 
     if(!flag)
     {
@@ -221,14 +212,21 @@ void build_tree(vector < Data > data_set, double e, int recur)
     }
     else
     {
+        vector < Data > set_1(data_set.begin(), data_set.begin() + min_j + 1); //[, )
+        vector < Data > set_2(data_set.begin() + min_j + 1, data_set.end());
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("if(attr[%d] < %lf)\n", min_idx, min_threshold);
-        
+
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("{\n");
 
+        /*if(label == -1)
+        {
+            for(int i = 0; i < data_set.size(); i++)
+                cerr << data_set[i].label << endl;
+        }*/
         build_tree(set_1, e, recur + 1); //left tree
         for(int i = 0; i < recur; i++)
             printf("\t");
