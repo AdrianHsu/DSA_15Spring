@@ -98,15 +98,15 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
     for(int i = 0; i < MAX_FEATURE; i++)
     {
         total = 0;
-        bool _total = true;
+        bool _same = true;
         double tmp = data_set[0].attr[i];
         for(int j = 0; j < data_set.size(); j++)
         {
             data_set[j].idx = i;
             if(data_set[j].attr[i] != tmp)
-                _total = false;
+                _same = false;
         }
-        if(_total)
+        if(_same)
         {
             total++;
             continue;
@@ -131,13 +131,13 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
                 min_idx = i;
                 min_j = j;
                 min_confusion = t;
+
                 if(!j_vector.empty())
                     j_vector.clear();
             }
             else if(t == min_confusion)
             {
                 j_vector.push_back(min_j);
-                min_j = j;
             }
         }
         if(!j_vector.empty())
@@ -145,11 +145,11 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             srand(time(NULL));
             int count = rand() % j_vector.size();
             min_j = j_vector[count];
-            cout << "//" << min_j << endl;
         }
     }
     if(total == MAX_FEATURE)
     {
+        cout << "//ERROR" << endl;// unique so that every node is different
         label = 0;
         return false;
     }
@@ -159,6 +159,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         min_threshold = (data_set[min_j].attr[min_idx] + data_set[min_j + 1].attr[min_idx]) / 2;
     else if(min_j == data_set.size() - 1)
         min_threshold = data_set[min_j].attr[min_idx] + 1;
+    cout << "//END" << endl;
     return true;
 
 }
@@ -226,7 +227,7 @@ void build_tree(vector < Data > data_set, double e, int recur)
     {
         for(int i = 0; i < recur; i++)
             printf("\t");
-        printf("if(attr[%d] <= %lf)\n", min_idx, min_threshold);
+        printf("if(attr[%d] < %lf)\n", min_idx, min_threshold);
         if(min_idx == 12 && min_threshold == 6)
         {    
             /*cout << "//min_idx: " << min_idx << endl;
