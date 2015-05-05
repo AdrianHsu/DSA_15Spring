@@ -1,6 +1,6 @@
 CC=g++
-FNAME=heart.train
-PNAME=heart.test
+FNAME=a1a.train
+PNAME=a1a.test
 EPSILON=0.1
 T=50
 RM=rm -rf
