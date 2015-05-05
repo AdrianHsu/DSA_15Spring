@@ -7,23 +7,28 @@ RM=rm -rf
 
 .PHONY: clean_tree_pred_func clean_forest_pred_func run_tree run_forest predict_tree predict_forest clean
 
-tree_pred_func.cpp: tree $(FNAME)
-	./tree $(FNAME) $(EPSILON) > $@
+decision_tree: decision_tree.cpp
+	$(CC) decision_tree.cpp -o $@
+run_decision_tree:
+	./decision_tree $(FNAME) $(EPSILON) > tree_pred_func.cpp
+
+#tree_pred_func.cpp: tree $(FNAME)
+#	./tree $(FNAME) $(EPSILON) > $@
 
 clean_tree_pred_func: 
 	$(RM) tree_pred_func.cpp
                       
-forest_pred_func.cpp: forest $(FNAME)
-	./forest $(FNAME) $(T) > $@
+#forest_pred_func.cpp: forest $(FNAME)
+#	./forest $(FNAME) $(T) > $@
 
-clean_forest_pred_func: 
-	$(RM) forest_pred_func.cpp
+#clean_forest_pred_func: 
+#	$(RM) forest_pred_func.cpp
 
-predict_tree: tree_predictor.cpp tree_pred_func.cpp $(PNAME)
+predict_tree: tree_predictor.cpp tree_pred_func.cpp
 	$(CC) tree_predictor.cpp tree_pred_func.cpp -o tree_predictor
 	./tree_predictor $(PNAME) > ./tree_prediction.txt
 
-run_tree: clean_tree_pred_func predict_tree
+run_tree: predict_tree clean_tree_pred_func
 
 predict_forest: forest_predictor.cpp forest_pred_func.cpp $(PNAME)
 	$(CC) forest_predictor.cpp forest_pred_func.cpp -o forest_predictor
