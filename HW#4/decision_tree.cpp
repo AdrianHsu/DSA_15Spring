@@ -87,7 +87,8 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         if(data_set[i].label == +1) a++;
         else if(data_set[i].label == -1)b++;
     }
-    if(confusion(a, b) <= e || (a == 0 || b == 0))
+    min_confusion = confusion(a, b);
+    if(min_confusion <= e || (a == 0 || b == 0))
     {
         label = (a > b? +1 : -1);
         return false;
@@ -109,7 +110,6 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             total++;
             continue;
         }
-
         sort(data_set.begin(), data_set.end(), cmp);
         
         c = 0, d = 0;
@@ -129,13 +129,13 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
                 min_idx = i;
                 min_j = j;
                 min_confusion = t;
-
                 if(!j_vector.empty())
                     j_vector.clear();
             }
             else if(t == min_confusion)
             {
                 j_vector.push_back(min_j);
+                min_j = j;
             }
         }
         if(!j_vector.empty())
@@ -183,7 +183,7 @@ void imput(vector< Data > &data_set, char** argv)
         while(tmp != NULL) {
             int id = atoi(tmp);
             tmp = strtok(NULL, ": ");
-            features[id - 1] = atof(tmp);
+            features[id] = atof(tmp);
             tmp = strtok(NULL, ": ");
         }
         Data data(_label, features);
