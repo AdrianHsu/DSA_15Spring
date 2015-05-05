@@ -126,8 +126,13 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             if(_total)
                 total++;
         }
+        //cout << "//" << data_set.size() << endl;
+        //cout << "//total = " << total << endl;
         if(total == MAX_FEATURE)
+        {
+            //cout << "//A" << endl;
             return false;
+        }
         for(int j = 0; j < data_set.size(); j++)
         {
             double tmp = data_set[j].attr[0];
@@ -135,8 +140,8 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             else if(data_set[j].label == -1) d++;
 
             double t = t_confusion(c, d, a - c, b - d);
-            if(j > 0)
-                if(data_set[j - 1].attr[i] == data_set[j].attr[i])
+            if(j + 1 < data_set.size())
+                if(data_set[j].attr[i] == data_set[j + 1].attr[i])
                     continue;
             if(t < min_confusion)
             {
@@ -147,6 +152,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             else if(t == min_confusion)
             {
                 //choose from them randomly
+                //cout << "//t == min_confusion" << endl;
                 min_idx = i;
                 min_confusion = t;
             }
@@ -243,13 +249,18 @@ void build_tree(vector < Data > data_set, double e, int recur)
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("if(attr[%d] <= %lf)\n", min_idx, min_threshold);
-        /*if(min_idx == 12 && min_threshold == 3)
+        if(min_idx == 12 && min_threshold == 6)
         {    
-            cout << "//" << data_set.size() << endl;
-            cout << "//" << set_1.size() << endl;
-            cout << "//" << set_2.size() << endl;
-            cout << "//" << min_confusion << endl;
-        }*/
+            /*cout << "//min_idx: " << min_idx << endl;
+            cout << "//min_j: " << min_j << endl;
+            cout << "//min_threshold: " << min_threshold << endl;
+            cout << "//data_set.size: " << data_set.size() << endl;
+            cout << "//set_1.size: " << set_1.size() << endl;
+            cout << "//set_2.size: " << set_2.size() << endl;
+            cout << "//min_confusion: " << min_confusion << endl;
+            for(int k = 0; k < data_set.size(); k++)
+                cout << "//" << data_set[k].attr[min_idx] << " " << min_idx << endl;*/
+        }
         for(int i = 0; i < recur; i++)
             printf("\t");
         printf("{\n");
