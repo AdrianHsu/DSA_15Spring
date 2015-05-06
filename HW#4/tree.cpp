@@ -51,7 +51,7 @@ int main(int argc, char** argv)
     sort(data_set.begin(), data_set.end(), cmp); // sort by index == 0
     erase_it = unique(data_set.begin(), data_set.end(), unique_func);
     data_set.erase(erase_it, data_set.end());
-
+    
     double epsilon = atof(argv[2]);
     print(data_set, epsilon);
     /*cout << data_set.size() << endl;
@@ -93,10 +93,8 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         label = (a > b? +1 : -1);
         return false;
     }
-    int total = 0;
     for(int i = 0; i < MAX_FEATURE; i++)
     {
-        total = 0;
         bool _same = true;
         double tmp = data_set[0].attr[i];
         for(int j = 0; j < data_set.size(); j++)
@@ -106,10 +104,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
                 _same = false;
         }
         if(_same)
-        {
-            total++;
             continue;
-        }
         sort(data_set.begin(), data_set.end(), cmp);
         
         c = 0, d = 0;
@@ -145,12 +140,6 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             min_j = j_vector[count];
         }
     }
-    if(total == MAX_FEATURE)
-    {
-        cout << "//ERROR" << endl;// unique so that every node is different
-        label = 0;
-        return false;
-    }    
     for(int j = 0; j < data_set.size(); j++)
         data_set[j].idx = min_idx;
     sort(data_set.begin(), data_set.end(), cmp); 
@@ -197,6 +186,7 @@ void print(vector < Data > data_set, double e)
     build_tree(data_set, e, 1);
     printf("}");
 }
+
 void build_tree(vector < Data > data_set, double e, int recur)
 {
     int min_idx = 0, min_j = 0, label = 1;
