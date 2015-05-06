@@ -13,7 +13,13 @@ class Data {
     public:
         Data(int _label, double* features)
             :attr(features), label(_label), idx(0){};
-
+        bool operator==(Data b)
+        {
+            for(int i = 0; i < MAX_FEATURE; i++)
+                if(attr[i] != b.attr[i])
+                    return false;
+            return true;
+        }
         double* attr;
         int label;
         int idx;
@@ -22,17 +28,6 @@ class Data {
 bool cmp(Data& a, Data& b)
 {
     return a.attr[a.idx] < b.attr[a.idx];
-}
-bool unique_func(Data a, Data b)
-{
-    if(a.label == b.label)
-    {
-        for(int i = 0; i < MAX_FEATURE; i++)
-            if(a.attr[i] != b.attr[i])
-                return false;
-        return true;
-    }
-    return false;
 }
 double confusion(int, int);
 double t_confusion(int, int, int, int);
@@ -46,18 +41,8 @@ int main(int argc, char** argv)
 {
     vector < Data > data_set;
     imput(data_set, argv);
-
-    vector< Data >::iterator erase_it;
-    sort(data_set.begin(), data_set.end(), cmp); // sort by index == 0
-    erase_it = unique(data_set.begin(), data_set.end(), unique_func);
-    data_set.erase(erase_it, data_set.end());
-    
     double epsilon = atof(argv[2]);
     print(data_set, epsilon);
-    /*cout << data_set.size() << endl;
-      cout << data_set[1].attr[0] << endl;
-      cout << data_set[1].attr[1] << endl;
-      cout << data_set[1].label << endl;*/
 
     return 0;
 }
@@ -175,10 +160,20 @@ void imput(vector< Data > &data_set, char** argv)
             features[id] = atof(tmp);
             tmp = strtok(NULL, ": ");
         }
+
         Data data(_label, features);
         data_set.push_back(data);        
         delete[] cstring;
     }
+    for(int i = 0; i < data_set.size(); i++)
+        for(int j = i + 1; j < data_set.size(); j++)
+        {
+            if(data_set[i] == data_set[j])
+            {
+                data_set.erase(data_set.begin() + j);
+                j--;
+            }
+        }
 }
 void print(vector < Data > data_set, double e)
 {
