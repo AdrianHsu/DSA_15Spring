@@ -81,6 +81,9 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         else if(data_set[i].label == -1)b++;
     }
     min_confusion = confusion(a, b);
+    // we declare a leaf with the final decision 
+    // with the majority of the examples (such as the Y in the 9Y1N case), 
+    // with ties arbitrarily broken.
     if(min_confusion <= e || a == 0 || b == 0)
     {
         label = (a > b? +1 : -1);
@@ -104,6 +107,8 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         vector< int > j_vector;
         for(int j = 0; j < data_set.size(); j++)
         {
+            //(BONUS)get an O(M log M ) time algorithm 
+            //for picking the best branching threshold.
             if(data_set[j].label == +1) c++;
             else if(data_set[j].label == -1) d++;
             if(j + 1 < data_set.size())

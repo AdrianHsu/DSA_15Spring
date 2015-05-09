@@ -1,6 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <cstdio>
+#include <set>
 #include <cstring>
 #include <fstream>
 #include <algorithm>
@@ -13,12 +14,19 @@ class Data {
     public:
         Data(int _label, double* features)
             :attr(features), label(_label), idx(0){};
-        bool operator==(Data b)
+        bool operator==(const Data &b) const
         {
             for(int i = 0; i < MAX_FEATURE; i++)
                 if(attr[i] != b.attr[i])
                     return false;
             return true;
+        }
+        bool operator<(const Data &a) const
+        {
+            for( int i = 0 ; i < MAX_FEATURE ; i ++ )
+                if( attr[ i ] != a.attr[ i ] )
+                    return attr[ i ] < a.attr[ i ];
+            return idx < a.idx;
         }
         double* attr;
         int label;
@@ -119,6 +127,8 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         vector< int > j_vector;
         for(int j = 0; j < data_set.size(); j++)
         {
+            //(BONUS)get an O(M log M ) time algorithm 
+            //for picking the best branching threshold.
             if(data_set[j].label == +1) c++;
             else if(data_set[j].label == -1) d++;
             if(j + 1 < data_set.size())
@@ -168,6 +178,7 @@ void imput(vector< Data > &data_set, char** argv)
     std::ifstream fin;
     string istring;
     fin.open(argv[1]);
+    set< Data > S;
 
     while (std::getline(fin, istring)) {
 
@@ -190,19 +201,12 @@ void imput(vector< Data > &data_set, char** argv)
             tmp = strtok(NULL, ": ");
         }
         Data data(_label, features);
+        if( S.count( data ) == 0 )
+            S.insert( data );
+        else continue;
+
         data_set.push_back(data);        
         delete[] cstring;
-    }
-    for(int i = 0; i < data_set.size(); i++)
-    {
-        for(int j = i + 1; j < data_set.size(); j++)
-        {
-            if(data_set[i] == data_set[j])
-            {
-                data_set.erase(data_set.begin() + j);
-                j--;
-            }
-        }
     }
 }
 void print(vector < Data > data_set, double T)
