@@ -2,7 +2,7 @@ CC=g++
 FNAME=a1a.train
 PNAME=a1a.test
 EPSILON=0
-T=30
+T=50
 RM=rm -rf
 
 .PHONY: clean_tree_pred_func clean_forest_pred_func run_tree run_forest predict_tree predict_forest clean

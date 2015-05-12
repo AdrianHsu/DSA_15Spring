@@ -41,14 +41,14 @@ double confusion(int, int);
 double t_confusion(int, int, int, int);
 bool find_threshold(vector< Data >&, int &,int &,int&, double, double &, double &);
 
-void imput(vector< Data > &, char**);
-void print(vector< Data >, double);
-void build_tree(vector< Data >, double, int);
+void input(vector< Data > &, char**);
+void print(vector< Data > &, double);
+void build_tree(vector< Data > &, double, int);
 
 int main(int argc, char** argv)
 {
     vector < Data > data_set;
-    imput(data_set, argv);
+    input(data_set, argv);
     double epsilon = atof(argv[2]);
     print(data_set, epsilon);
 
@@ -147,7 +147,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         min_threshold = data_set[min_j].attr[min_idx] + 1;
     return true;
 }
-void imput(vector< Data > &data_set, char** argv)
+void input(vector< Data > &data_set, char** argv)
 {
     std::ifstream fin;
     string istring;
@@ -183,14 +183,14 @@ void imput(vector< Data > &data_set, char** argv)
         delete[] cstring;
     }
 }
-void print(vector < Data > data_set, double e)
+void print(vector < Data > &data_set, double e)
 {
     printf("int tree_predict(double *attr)\n{\n");
     build_tree(data_set, e, 1);
     printf("}");
 }
 
-void build_tree(vector < Data > data_set, double e, int recur)
+void build_tree(vector < Data > &data_set, double e, int recur)
 {
     int min_idx = 0, min_j = 0, label = 1;
     double min_threshold = 0, min_confusion = 1;

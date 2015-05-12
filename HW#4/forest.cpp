@@ -39,18 +39,18 @@ bool cmp(Data& a, Data& b)
 }
 double confusion(int, int);
 double t_confusion(int, int, int, int);
-vector< Data > one_third(vector< Data >);
+inline vector< Data > one_third(vector< Data >);
 bool find_threshold(vector< Data >&, int &,int &,int&, double &, double &);
 
-void imput(vector< Data > &, char**);
+void input(vector< Data > &, char**);
 void print(vector< Data >, double);
-void build_tree(vector< Data >, int);
-void random_forest(vector< Data >, int);
+void build_tree(vector< Data >& , int);
+void random_forest(vector< Data >&, int);
 
 int main(int argc, char** argv)
 {
     vector < Data > data_set;
-    imput(data_set, argv);
+    input(data_set, argv);
     double epsilon = atof(argv[2]);
     print(data_set, epsilon);
 
@@ -73,7 +73,7 @@ double t_confusion(int c, int d, int e, int f)
         return 0;
     return ( c_add_d / total ) * confusion(c, d) + ( e_add_f / total ) * confusion(e, f) ;
 }
-vector< Data > one_third(vector< Data > data_set)
+inline vector< Data > one_third(vector< Data > data_set)
 {
     int N = data_set.size();
     vector< Data > tmp;
@@ -122,7 +122,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
             continue;
         }
         sort(data_set.begin(), data_set.end(), cmp);
-        
+
         c = 0, d = 0;
         vector< int > j_vector;
         for(int j = 0; j < data_set.size(); j++)
@@ -146,7 +146,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
                     j_vector.clear();
             }
             else if(t == min_confusion)
-           {
+            {
                 j_vector.push_back(min_j);
                 min_j = j;
             }
@@ -173,7 +173,7 @@ bool find_threshold(vector< Data > &data_set, int &min_idx,int &min_j,int &label
         min_threshold = data_set[min_j].attr[min_idx] + 1;
     return true;
 }
-void imput(vector< Data > &data_set, char** argv)
+void input(vector< Data > &data_set, char** argv)
 {
     std::ifstream fin;
     string istring;
@@ -215,7 +215,7 @@ void print(vector < Data > data_set, double T)
     random_forest(data_set, T);
     printf("}");
 }
-void build_tree(vector < Data > data_set, int recur)
+void build_tree(vector < Data > &data_set, int recur)
 {
     int min_idx = 0, min_j = 0, label = 1;
     double min_threshold = 0, min_confusion = 1;
@@ -244,10 +244,10 @@ void build_tree(vector < Data > data_set, int recur)
         printf("{\n");
 
         /*if(label == -1)
-        {
-            for(int i = 0; i < data_set.size(); i++)
-                cerr << data_set[i].label << endl;
-        }*/
+          {
+          for(int i = 0; i < data_set.size(); i++)
+          cerr << data_set[i].label << endl;
+          }*/
         build_tree(set_1, recur + 1); //left tree
         for(int i = 0; i < recur; i++)
             printf("\t");
@@ -266,14 +266,15 @@ void build_tree(vector < Data > data_set, int recur)
         printf("}\n");
     }
 }
-void random_forest(vector< Data > data_set, int T)
+void random_forest(vector< Data > &data_set, int T)
 {
     printf("\tint a = 0, b = 0;\n");
 
     for(int i = 0; i < T; i++)
     {
         printf("\t//tree%d_predict:\n", i);
-        build_tree(one_third(data_set), 1);
+        vector< Data > tmp = one_third(data_set);
+        build_tree(tmp, 1);
     }
     printf("\t//voting:\n");
     printf("\treturn (a > b? +1 : -1);\n");
