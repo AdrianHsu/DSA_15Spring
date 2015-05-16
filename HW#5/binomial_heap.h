@@ -21,7 +21,7 @@ class BinomialHeap {
              * (nullptr is a null pointer (like NULL in C))
              */
             int size() {
-                return (this!=nullptr)?this->_size:0;
+                return ( (this!=nullptr) ? this->_size : 0);
             }
         };
         /* some definition for convinience
