@@ -73,8 +73,8 @@ int main()
             else
             {
                 bh[cm1].merge(bh[cm2]);
-                //printf("The largest priority number is now %d on computer %d.\n", bh[cm1].getMax().first, cm1);
-                printf("The largest priority number is now %d on %d.\n", bh[cm1].getMax().first, cm1);
+                printf("The largest priority number is now %d on computer %d.\n", bh[cm1].getMax().first, cm1);
+                //printf("The largest priority number is now %d on %d.\n", bh[cm1].getMax().first, cm1);
             }
         }
         else
