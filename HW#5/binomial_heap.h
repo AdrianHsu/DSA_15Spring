@@ -172,14 +172,14 @@ class BinomialHeap {
         int getSize()
         {
             return size;
-        }
-        
+        } 
         void insert(const T &element) {
             BH tmp = BH(element);
             merge(tmp);
         }
         T pop() {
-            if(size==0) throw EmptyHeap();
+            if(size==0) 
+                throw EmptyHeap();
             else {
                 //find the tree contains maximum element
                 int max_tree = -1;

@@ -51,14 +51,18 @@ int main()
             scanf("%d", &cm);
             vector <priority_id> vec;
             priority_id tmp = bh[cm].getMax();
-            while(bh[cm].getMax().first == tmp.first)
+            while(bh[cm].getMax().first == tmp.first && bh[cm].getSize() != 1)
             {
                 vec.push_back(bh[cm].pop());
             }
+            if(bh[cm].getSize() == 1 && bh[cm].getMax().first == tmp.first )
+                vec.push_back(bh[cm].pop());
             
             sort(vec.begin(), vec.end(), cmp);
             for(int i = 0; i < vec.size(); i++)
+            {
                 printf("Computer %d executed task %d.\n", cm, vec[i].second);
+            }
         }
         else if(command == "merge")
         {
@@ -69,7 +73,8 @@ int main()
             else
             {
                 bh[cm1].merge(bh[cm2]);
-                printf("The largest priority number is now %d on computer %d.\n", bh[cm1].getMax().first, cm1);
+                //printf("The largest priority number is now %d on computer %d.\n", bh[cm1].getMax().first, cm1);
+                printf("The largest priority number is now %d on %d.\n", bh[cm1].getMax().first, cm1);
             }
         }
         else
