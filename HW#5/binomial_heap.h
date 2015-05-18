@@ -46,12 +46,14 @@ class BinomialHeap {
         CarrySum merge_tree(BT *a, BT *b, BT *c) {
             // write your code here.
             CarrySum tmp;
-            if(a.size() != b.size())
-            {
-                return;
-            }
             if(c == nullptr)
             {
+                if(a->size() != b->size())
+                {
+                    // b.size() must > a.size()
+                    tmp = make_pair(b, a);
+                    return tmp;
+                }
                 if(a == nullptr && b == nullptr)
                 {
                     tmp = make_pair( nullptr, nullptr );
@@ -71,7 +73,8 @@ class BinomialHeap {
                     {
                         b->_size++;
                         b->children.push_back(a);
-                        tmp = CarrySum( b, nullptr);
+                        swap(a, b); //???
+                        tmp = CarrySum( a, nullptr); //???
                     }
                 }
                 return tmp;
@@ -121,22 +124,20 @@ class BinomialHeap {
          */
         void merge(BH &b) {
             // write your code here.
-            CarrySum carry = make_pair(NULL, NULL);      
-            //int counter = 0;
-            typename std::list<BT*>::iterator b_it = b->children.begin();
-            typename std::list<BT*>::iterator _it = (*this)->children.begin();
-            while(_it != (*this)->children.end() && b_it != b->children.end())
+            CarrySum carry = make_pair(nullptr, nullptr);      
+            int counter = 0;
+            while(counter < 32)
             {
-                carry = merge_tree(*_it, *b_it, carry.second);
-
-                ++b_it;
-                ++_it;
-                //++counter;
+                carry = merge_tree((*this)->tree[counter], b->tree[counter], carry.second);
+                b->tree[counter] = nullptr;
+                counter++;
             }
             for(int i = 31; i >= 0; i--)
-                if((*this)->tree[i] != nullptr) size = i;
-            for(int j = 0; j < 32; ++j)
-                b.tree[j] = nullptr;
+                if((*this)->tree[i] != nullptr)
+                {
+                    size = i;
+                    break;
+                }
         }
 
         void insert(const T &element) {
