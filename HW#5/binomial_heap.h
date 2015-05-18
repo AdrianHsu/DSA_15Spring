@@ -73,8 +73,8 @@ class BinomialHeap {
                     {
                         b->_size++;
                         b->children.push_back(a);
-                        swap(a, b); //???
-                        tmp = CarrySum( a, nullptr); //???
+                        //swap(a, b); //???
+                        tmp = CarrySum( b, nullptr); //???
                     }
                 }
                 return tmp;
@@ -128,7 +128,8 @@ class BinomialHeap {
             int counter = 0;
             while(counter < 32)
             {
-                carry = merge_tree((*this)->tree[counter], b->tree[counter], carry.second);
+                carry = merge_tree((*this)->tree[counter], b->tree[counter], carry.first);
+                (*this)->tree[counter] = carry.second;
                 b->tree[counter] = nullptr;
                 counter++;
             }
