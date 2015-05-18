@@ -95,11 +95,10 @@ class BinomialHeap {
             T max = a->element;
             
             BH tmp_BH;
-            int counter = 0;
             typename std::list<BT*>::iterator it = a->children.begin();
-            for( it; it != a->children.end(); ++it, ++counter )
+            for( it; it != a->children.end(); ++it )
             {
-                tmp_BH.trees[counter] = *it;
+                tmp_BH.trees[*it.size()] = *it;
             }
             MaxRemainder result = make_pair( max, tmp_BH);
             return result;
