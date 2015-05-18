@@ -73,14 +73,13 @@ class BinomialHeap {
                     {
                         b->_size++;
                         b->children.push_back(a);
-                        //swap(a, b); //???
-                        tmp = CarrySum( b, nullptr); //???
+                        tmp = CarrySum( b, nullptr);
                     }
                 }
                 return tmp;
             }
             tmp = merge_tree(b, c, nullptr);
-            merge_tree(a, tmp.second, nullptr);
+            merge_tree(a, tmp.first, nullptr);
         };
 
         /* Pop the maximum element of a binomial tree and make other elements a binomial heap.
