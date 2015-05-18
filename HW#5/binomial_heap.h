@@ -126,6 +126,7 @@ class BinomialHeap {
             for( ; it != a->children.end(); ++it )
             {
                 tmp_BH.trees[(*it)->size()] = *it;
+                tmp_BH.size++;
             }
             MaxRemainder result = make_pair( max, tmp_BH);
             return result;
@@ -161,8 +162,6 @@ class BinomialHeap {
                     size++;
                 counter++;
             }
-            /*if(trees[1]->size())
-                cout << trees[1]->element << endl;*/
         }
 
         void insert(const T &element) {

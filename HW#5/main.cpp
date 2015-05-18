@@ -15,6 +15,8 @@ int main()
     _bh.insert(6);
     _bh.insert(7);
     _bh.insert(8);
+    _bh.insert(9);
+    _bh.pop();
     //printf("%d", _bh.trees[0]->element);
     /*int c, w;
       scanf("%d%d", &c, &w);
