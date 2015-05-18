@@ -1,6 +1,7 @@
 #include <utility>
 #include <list>
 
+using namespace std;
 struct EmptyHeap: public std::exception {};
 
 template<class T>
@@ -49,7 +50,7 @@ class BinomialHeap {
             {
                 if(a == nullptr && b == nullptr)
                 {
-                    tmp = make_pair( nullptr, nullptr);
+                    tmp = make_pair( nullptr, nullptr );
                     return tmp;
                 }
                 if(a == nullptr) tmp = make_pair(nullptr, b);
@@ -89,7 +90,7 @@ class BinomialHeap {
             
             BH tmp_BH;
             int counter = 0;
-            list< BT* >::iterator it = a->children.begin();
+            typename std::list<BT*>::iterator it = a->children.begin();
             for( it; it != a->children.end(); ++it, ++counter )
             {
                 tmp_BH.trees[counter] = *it;
@@ -118,18 +119,18 @@ class BinomialHeap {
             // write your code here.
             CarrySum carry = make_pair(NULL, NULL);      
             //int counter = 0;
-            list< BT* >::iterator b_it = b->children.begin();
-            list< BT* >::iterator a_it = a->children.begin();
-            while(a_it != a->children.end() && b_it != b->children.end())
+            typename std::list<BT*>::iterator b_it = b->children.begin();
+            typename std::list<BT*>::iterator _it = (*this)->children.begin();
+            while(_it != (*this)->children.end() && b_it != b->children.end())
             {
-                carry = merge_tree(*a_it, *b_it, carry.second);
+                carry = merge_tree(*_it, *b_it, carry.second);
 
                 ++b_it;
-                ++a_it;
+                ++_it;
                 //++counter;
             }
             for(int i = 31; i >= 0; i--)
-                if(tree[i] != nullptr) size = i;
+                if((*this)->tree[i] != nullptr) size = i;
             for(int j = 0; j < 32; ++j)
                 b.tree[j] = nullptr;
         }
