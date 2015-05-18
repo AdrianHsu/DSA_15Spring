@@ -46,6 +46,10 @@ class BinomialHeap {
         CarrySum merge_tree(BT *a, BT *b, BT *c) {
             // write your code here.
             CarrySum tmp;
+            if(a.size() != b.size())
+            {
+                return;
+            }
             if(c == nullptr)
             {
                 if(a == nullptr && b == nullptr)
