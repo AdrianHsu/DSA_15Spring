@@ -7,7 +7,6 @@ struct EmptyHeap: public std::exception {};
 template<class T>
 class BinomialHeap {
     private:
-    //public:
         /* inner class: binomial tree */
         struct BinomialTree {
             int _size;
@@ -27,7 +26,7 @@ class BinomialHeap {
             }
         };
         /* some definition for convinience
-         */
+        */
         typedef BinomialTree BT;
         typedef BinomialHeap<T> BH;
         typedef std::pair<BT*, BT*> CarrySum;
@@ -121,12 +120,18 @@ class BinomialHeap {
         MaxRemainder pop_max(BT *a) {
             // write your code here.
             T max = a->element; 
-            BH tmp_BH;
+            BH tmp_BH; //size == 0
             typename std::list<BT*>::iterator it = a->children.begin();
-            for( ; it != a->children.end(); ++it )
+            for(; it != a->children.end(); ++it)
             {
-                tmp_BH.trees[(*it)->size()] = *it;
-                tmp_BH.size++;
+                int _binary = 1, i = 0;
+                while(_binary < (*it)->size() )
+                {
+                    _binary *= 2;
+                    i++;
+                }
+                tmp_BH.trees[ i ] = *it;
+                tmp_BH.size += (*it)->size();
             }
             MaxRemainder result = make_pair( max, tmp_BH);
             return result;
@@ -159,11 +164,16 @@ class BinomialHeap {
                 trees[counter] = carry.second;
                 b.trees[counter] = nullptr;
                 if(trees[counter] != nullptr)
-                    size++;
+                    size += trees[counter]->size();
                 counter++;
             }
+            b.size = 0;
         }
-
+        int getSize()
+        {
+            return size;
+        }
+        
         void insert(const T &element) {
             BH tmp = BH(element);
             merge(tmp);
@@ -176,16 +186,25 @@ class BinomialHeap {
                 for(int i=0; i<32; ++i)
                     if(trees[i]->size() > 0 && (max_tree == -1 || trees[i]->element > trees[max_tree]->element))
                         max_tree = i;
-
                 MaxRemainder m_r = pop_max(trees[max_tree]);
                 T &max_element = m_r.first;
                 BH &remainder = m_r.second;
-                
-                // ???
-                size--;
+
                 trees[max_tree] = nullptr;
+                size--;
+
                 merge(remainder);
                 return max_element;
+            }
+        }
+        T getMax() {
+            if(size == 0) throw EmptyHeap();
+            else {
+                int max_tree = -1;
+                for(int i=0; i<32; ++i)
+                    if(trees[i]->size() > 0 && (max_tree == -1 || trees[i]->element > trees[max_tree]->element))
+                        max_tree = i;
+                return trees[max_tree]->element;            
             }
         }
 };
