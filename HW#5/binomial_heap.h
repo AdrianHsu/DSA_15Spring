@@ -7,6 +7,7 @@ struct EmptyHeap: public std::exception {};
 template<class T>
 class BinomialHeap {
     private:
+    //public:
         /* inner class: binomial tree */
         struct BinomialTree {
             int _size;
@@ -45,41 +46,68 @@ class BinomialHeap {
          */
         CarrySum merge_tree(BT *a, BT *b, BT *c) {
             // write your code here.
+
             CarrySum tmp;
             if(c == nullptr)
             {
-                if(a->size() != b->size())
-                {
-                    // b.size() must > a.size()
-                    tmp = make_pair(b, a);
-                    return tmp;
-                }
                 if(a == nullptr && b == nullptr)
                 {
                     tmp = make_pair( nullptr, nullptr );
                     return tmp;
                 }
-                if(a == nullptr) tmp = make_pair(nullptr, b);
-                else if(b == nullptr) tmp = make_pair(nullptr, a);
+                if(a == nullptr)
+                {
+                    tmp = make_pair(nullptr, b);
+                    return tmp;
+                }
+                else if(b == nullptr)
+                {
+                    tmp = make_pair(nullptr, a);
+                    return tmp;
+                }
+                if(a->size() != b->size())
+                {
+                    // b.size() must > a.size()
+                    if(a->size() > b->size())
+                        tmp = make_pair(a, b);
+                    else
+                        tmp = make_pair(b, a);
+                }
                 else
                 {
                     if(a -> element >= b-> element)
                     {
-                        a->_size++;
+                        a->_size += b->_size;
                         a->children.push_back(b);
                         tmp = CarrySum( a, nullptr);
                     }
                     else
                     {
-                        b->_size++;
+                        b->_size += a->_size;
                         b->children.push_back(a);
                         tmp = CarrySum( b, nullptr);
                     }
                 }
                 return tmp;
             }
-            tmp = merge_tree(b, c, nullptr);
-            merge_tree(a, tmp.first, nullptr);
+            else
+            {
+                if(a == nullptr && b == nullptr)
+                {
+                    tmp = make_pair(nullptr, c);
+                    return tmp;
+                }
+                if(a == nullptr)
+                    tmp = merge_tree(b, c, nullptr);
+                else if(b == nullptr)
+                    tmp = merge_tree(a, c, nullptr);
+                else
+                {
+                    tmp = merge_tree(b, c, nullptr);
+                    tmp = merge_tree(a, tmp.first, nullptr);
+                }
+                return tmp;
+            }
         };
 
         /* Pop the maximum element of a binomial tree and make other elements a binomial heap.
@@ -92,13 +120,12 @@ class BinomialHeap {
          */
         MaxRemainder pop_max(BT *a) {
             // write your code here.
-            T max = a->element;
-            
+            T max = a->element; 
             BH tmp_BH;
             typename std::list<BT*>::iterator it = a->children.begin();
-            for( it; it != a->children.end(); ++it )
+            for( ; it != a->children.end(); ++it )
             {
-                tmp_BH.trees[*it.size()] = *it;
+                tmp_BH.trees[(*it)->size()] = *it;
             }
             MaxRemainder result = make_pair( max, tmp_BH);
             return result;
@@ -124,25 +151,23 @@ class BinomialHeap {
             // write your code here.
             CarrySum carry = make_pair(nullptr, nullptr);      
             int counter = 0;
+            size = 0;
             while(counter < 32)
             {
-                carry = merge_tree((*this)->tree[counter], b->tree[counter], carry.first);
-                (*this)->tree[counter] = carry.second;
-                b->tree[counter] = nullptr;
+                carry = merge_tree(trees[counter], b.trees[counter], carry.first);
+                trees[counter] = carry.second;
+                b.trees[counter] = nullptr;
+                if(trees[counter] != nullptr)
+                    size++;
                 counter++;
             }
-            for(int i = 31; i >= 0; i--)
-                if((*this)->tree[i] != nullptr)
-                {
-                    size = i;
-                    break;
-                }
+            /*if(trees[1]->size())
+                cout << trees[1]->element << endl;*/
         }
 
         void insert(const T &element) {
             BH tmp = BH(element);
             merge(tmp);
-
         }
         T pop() {
             if(size==0) throw EmptyHeap();
@@ -158,7 +183,7 @@ class BinomialHeap {
                 BH &remainder = m_r.second;
                 
                 // ???
-                size++;
+                size--;
                 trees[max_tree] = nullptr;
                 merge(remainder);
                 return max_element;
