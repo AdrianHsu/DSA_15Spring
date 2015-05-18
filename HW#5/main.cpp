@@ -9,7 +9,6 @@ int main()
     int c, w;
     scanf("%d%d", &c, &w);
     string command;
-
     while( cin >> command )
     {
         if(command == "assign")
