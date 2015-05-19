@@ -15,22 +15,6 @@ bool cmp(priority_id& a, priority_id& b)
 }
 int main()
 {
-    /*BinomialHeap<int> _bh;
-      _bh.insert(1);
-      _bh.insert(2);
-      _bh.insert(3);
-      _bh.insert(4);
-      _bh.insert(5);
-      _bh.insert(6);
-      _bh.insert(7);
-      _bh.insert(8);
-      _bh.insert(9);
-      _bh.pop();
-      for(int i = 1; i < (1 << 15) + 1; i++)
-      {
-      _bh.insert(i);
-      }*/
-    
     unsigned int c = 1, w;
 
     scanf("%u%u", &c, &w);
@@ -51,13 +35,13 @@ int main()
             scanf("%d", &cm);
             vector <priority_id> vec;
             priority_id tmp = bh[cm].getMax();
-            while(bh[cm].getMax().first == tmp.first && bh[cm].getSize() != 1)
+            while(bh[cm].getMax().first == tmp.first && bh[cm].getSize() > 1)
             {
                 vec.push_back(bh[cm].pop());
             }
             if(bh[cm].getSize() == 1 && bh[cm].getMax().first == tmp.first )
                 vec.push_back(bh[cm].pop());
-            
+
             sort(vec.begin(), vec.end(), cmp);
             for(int i = 0; i < vec.size(); i++)
             {

@@ -191,7 +191,7 @@ class BinomialHeap {
                 BH &remainder = m_r.second;
 
                 trees[max_tree] = nullptr;
-                size--;
+                //size--; //size will be redefined int merge()
 
                 merge(remainder);
                 return max_element;
