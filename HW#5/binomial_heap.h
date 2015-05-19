@@ -133,6 +133,7 @@ class BinomialHeap {
                 tmp_BH.trees[ i ] = *it;
                 tmp_BH.size += (*it)->size();
             }
+            delete a;
             MaxRemainder result = make_pair( max, tmp_BH);
             return result;
         }
