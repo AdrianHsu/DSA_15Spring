@@ -34,6 +34,11 @@ int main()
             int cm = -1;
             scanf("%d", &cm);
             vector <priority_id> vec;
+            if(bh[cm].getSize() == 0)
+            {
+                printf("No more task on this computer.\n");
+                continue;
+            }
             priority_id tmp = bh[cm].getMax();
             while(bh[cm].getMax().first == tmp.first && bh[cm].getSize() > 1)
             {
@@ -57,8 +62,7 @@ int main()
             else
             {
                 bh[cm1].merge(bh[cm2]);
-                printf("The largest priority number is now %d on computer %d.\n", bh[cm1].getMax().first, cm1);
-                //printf("The largest priority number is now %d on %d.\n", bh[cm1].getMax().first, cm1);
+                printf("The largest priority number is now %d on %d.\n", bh[cm1].getMax().first, cm1);
             }
         }
         else
