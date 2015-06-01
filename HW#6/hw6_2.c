@@ -12,7 +12,6 @@ void preorder_integer_avl(const struct avl_node *node)
 {
 	if(node == NULL)
 		return;
-
 	printf("%s ", (char *)node->avl_data);
 	if(node->avl_link[0] != NULL || node->avl_link[1] != NULL)
 	{
@@ -105,9 +104,9 @@ int main(){
 		}
 	}
 	preorder_integer_avl(avl_tree->avl_root);
-	printf("\n\n");
+	printf("\n");
 	preorder_integer_bst(bst_tree->bst_root);
-	printf("\n\n");
+	printf("\n");
 	preorder_integer_rb(rb_tree->rb_root);
 	puts("");
 	return 0 ;
