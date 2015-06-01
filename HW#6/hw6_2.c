@@ -26,8 +26,6 @@ int dic_compare(const void *pa, const void *pb, void * param)
 
 	const int str1_len = strlen(str1);
 	const int str2_len = strlen(str2);
-	printf("%s\n", str1);
-	printf("%s\n", str2);
 	int i = 0;
 	while(1)
 	{
@@ -68,7 +66,8 @@ int main(){
 	char S1 [MAX_STRLEN];
 	while(scanf("%s", S1) == 1)
 	{
-		void** p = avl_probe(tree, S1);
+		char* element = S1;
+		void** p = avl_probe(tree, element);
 	}
 	preorder_integer_avl(tree->avl_root);
 	puts("");
