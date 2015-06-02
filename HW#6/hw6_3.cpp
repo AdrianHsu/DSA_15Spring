@@ -124,7 +124,7 @@ void inorder_integer_avl(const struct avl_node* node,const long_int s,
 	else if(*total > s)
 	{
 		cerr << s << endl;
-		k--;
+		(*k)--;
 		return;
 	}
 	
