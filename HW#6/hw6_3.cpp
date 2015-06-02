@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 extern "C" {
-	#include "avl_ntudsa.h"
+	//#include "avl_ntudsa.h"
+	#include "avl.h"
 }
 
 using namespace std;
@@ -28,7 +29,7 @@ void owner_identified();
 void first_incident(int , int);
 
 void inorder_integer_avl(const struct avl_node *,const long_int,
-						 long_int *, int *);
+						 long_int *, int *, int);
 int int_compare(const void *, const void *, void *);
 void second_incident(int , long_int);
 
@@ -91,7 +92,7 @@ void first_incident(int i, int j)
 	// u will simply switch to play her/his j-th game.
 
 	i = find_owner(i);
-	j = find_owner(j);
+	//j = find_owner(j);
 	if(disjoint_Set[ i ].owner == disjoint_Set[ j ].owner)
 		return;
 
@@ -99,37 +100,44 @@ void first_incident(int i, int j)
 	// u will visit the person who owns the j-th game,
 	// say v, and borrow all v’s computer games.
 
-	while(j != disjoint_Set[ j ].owner)
-		j = disjoint_Set[ j ].owner;	
-	
+	j = find_owner(j);	
 	disjoint_Set[ j ].owner = i;
 	_NUM_OF_OWNER--;
+
 	owner_identified();
 }
 
-void inorder_integer_avl(const struct avl_node* node,const long_int s,
-						 long_int* total , int* k)
+void inorder_integer_avl(const struct avl_node* node, const long_int s,
+						 long_int* total , int* k, int* flag)
 {
 	if(node == NULL)
 		return;
 
-	if(node->avl_link[0] != NULL)
-		inorder_integer_avl(node->avl_link[0], s, total, k);
+	if(node->avl_link[0] != NULL && *flag){
+		inorder_integer_avl(node->avl_link[0], s, total, k, flag);
+	}
 
-	*total += node->avl_data;
-	(*k)++;
-
-	if(*total == s)
-		return;
-	else if(*total > s)
+	if(*flag)
 	{
-		cerr << s << endl;
+		*total += *(long_int *)node->avl_data;
+		//*total += node->avl_data;
+		(*k)++;
+	}
+	if(*total == s && *flag)
+	{
+		*flag = 0;
+		return;
+	}
+	else if(*total > s && *flag)
+	{
+		*flag = 0;
 		(*k)--;
 		return;
 	}
+
 	
-	if(node->avl_link[1] != NULL)
-		inorder_integer_avl(node->avl_link[1], s, total, k);
+	if(node->avl_link[1] != NULL && *flag)
+		inorder_integer_avl(node->avl_link[1], s, total, k, flag);
 }
 int int_compare(const void *pa, const void *pb, void * param)
 {
@@ -147,13 +155,19 @@ void second_incident(int i, long_int s)
 
 	for(int j = 1; j <= _TOTAL_GAME; j++)
 		if(disjoint_Set[ j ].owner == i)
-		{	
-			avl_probe(avl_tree, disjoint_Set[ j ].price);
+		{
+			long_int* element = (long_int*)malloc(sizeof(long_int));
+			*element = disjoint_Set[ j ].price;
+			avl_probe(avl_tree, element);
+			//avl_probe(avl_tree, disjoint_Set[ j ].price);
 		}
 	
 	long_int* total = new long_int(0);
 	int* k = new int(0);
-	inorder_integer_avl(avl_tree->avl_root, s, total, k);
+	int* flag = new int (1);
+	inorder_integer_avl(avl_tree->avl_root, s, total, k, flag);
 	cout << i << " " << *k << endl;
-
+	delete avl_tree;
+	delete total;
+	delete k;
 }
