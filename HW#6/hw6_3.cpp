@@ -1,8 +1,8 @@
 #include <iostream>
 #include <string>
 extern "C" {
-	//#include "avl_ntudsa.h"
-	#include "avl.h"
+	#include "avl_ntudsa.h"
+	//#include "avl.h"
 }
 
 using namespace std;
@@ -104,7 +104,7 @@ void first_incident(int i, int j)
 	disjoint_Set[ j ].owner = i;
 	_NUM_OF_OWNER--;
 
-	owner_identified();
+	//owner_identified();
 }
 
 void inorder_integer_avl(const struct avl_node* node, const long_int s,
@@ -113,18 +113,19 @@ void inorder_integer_avl(const struct avl_node* node, const long_int s,
 	if(node == NULL)
 		return;
 
-	if(node->avl_link[0] != NULL && *flag){
+	if(node->avl_link[0] != NULL && *flag){		
 		inorder_integer_avl(node->avl_link[0], s, total, k, flag);
 	}
 
 	if(*flag)
 	{
-		*total += *(long_int *)node->avl_data;
-		//*total += node->avl_data;
+		//*total += *(long_int *)node->avl_data;
+		*total += node->avl_data;
 		(*k)++;
 	}
 	if(*total == s && *flag)
 	{
+
 		*flag = 0;
 		return;
 	}
@@ -134,18 +135,17 @@ void inorder_integer_avl(const struct avl_node* node, const long_int s,
 		(*k)--;
 		return;
 	}
-
 	
 	if(node->avl_link[1] != NULL && *flag)
 		inorder_integer_avl(node->avl_link[1], s, total, k, flag);
 }
 int int_compare(const void *pa, const void *pb, void * param)
 {
-	long_int a = *(const long_int *)pa;
-	long_int b = *(const long_int *)pb;
+	int a = *(int *)pa;
+	int b = *(int *)pb;
 	if(a < b) return -1;
 	else if (a > b)return +1;
-	else return 0;
+	else return -1;
 }
 void second_incident(int i, long_int s)
 {
@@ -153,15 +153,17 @@ void second_incident(int i, long_int s)
 	struct avl_table *avl_tree ;
 	avl_tree = avl_create(int_compare , NULL, NULL);
 
+	owner_identified();
 	for(int j = 1; j <= _TOTAL_GAME; j++)
-		if(disjoint_Set[ j ].owner == i)
+	{
+		if(disjoint_Set[ j ].owner  == i)
 		{
-			long_int* element = (long_int*)malloc(sizeof(long_int));
-			*element = disjoint_Set[ j ].price;
-			avl_probe(avl_tree, element);
-			//avl_probe(avl_tree, disjoint_Set[ j ].price);
+			//long_int* element = (long_int*)malloc(sizeof(long_int));
+			//*element = disjoint_Set[ j ].price;
+			//avl_probe(avl_tree, element);
+			avl_probe(avl_tree, disjoint_Set[ j ].price);
 		}
-	
+	}
 	long_int* total = new long_int(0);
 	int* k = new int(0);
 	int* flag = new int (1);
@@ -169,5 +171,6 @@ void second_incident(int i, long_int s)
 	cout << i << " " << *k << endl;
 	delete avl_tree;
 	delete total;
+	delete flag;
 	delete k;
 }
