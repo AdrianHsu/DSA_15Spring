@@ -8,45 +8,76 @@ using namespace std;
 
 typedef unsigned long long int longint;
 
-int id_compare(const void *pa, const void *pb, void * param)
-{
-	int a = *(const int*)pa;
-	int b = *(const int*)pb;
-	if(a < b) return -1;
-	else if (a > b)return +1;
-	else return 0;
-}
+class Node{
 
+public:
+	Node()
+		:key(0), price(0){}
+	Node(int _key, int _price)
+		:key(_key), price(_price){}
+
+	int key;
+	int price;
+};
+
+Node disjoint_Set[110000]; //User == disjoint set
+int _NUM_OF_USER = 0;
+
+/*int find_root(int i)
+{
+	while(i != disjoint_Set[ i ].key)
+	{
+		i = disjoint_Set[ i ].key;
+	}
+	return i;
+}*/
+void first_incident(int i, int j)
+{	
+	// CASE1: If u also owns the j-th computer game, 
+	// u will simply switch to play her/his j-th game.
+
+	if(disjoint_Set[ i ].key == disjoint_Set[ j ].key)
+		return;
+
+	// CASE2: If u doesn’t own the j-th computer game, 
+	// u will visit the person who owns the j-th game,
+	// say v, and borrow all v’s computer games.
+
+	while(j != disjoint_Set[ j ].key)
+	{
+		int key = disjoint_Set[ j ].key;
+		disjoint_Set[ j ].key = i;
+		j = key;
+	}
+	
+	disjoint_Set[ j ].key = i;	
+	_NUM_OF_USER--;
+}
 int main()
 {
 
-	unsigned int n = 0, m = 0;
-	scanf("%u%u",&n, &m);
+	int n = 0, m = 0;
+	scanf("%d%d",&n, &m);
+	_NUM_OF_USER = n;
 
-	struct avl_table **avl_tree = new avl_table* [ n ];
-	
-	for(int i = 0; i < n; i++)
+	disjoint_Set[0] = Node(-1, -1);
+
+	int price = 0;
+	for(int i = 1; i <= _NUM_OF_USER; i++)
 	{
-		avl_tree[i] = avl_create(id_compare , NULL, NULL);
-		int price = 0;
-		scanf("%u", &price);
-		int* p = avl_probe(avl_tree[i], price);
+		scanf("%d", &price);
+		disjoint_Set[i] = Node(i, price);
 	}
-
+	
 	string incident;
-	while(cin >> incident)
+	for(int counter = 0; counter < m; counter++)
 	{
+		cin >> incident;
 		if(incident == "1")
 		{
-			unsigned int i = 0, j = 0;
-			scanf("%u%u",&i, &j);
-			if(i == j)
-			{
-				printf("ERROR\n");
-				break;				
-			}
-
-
+			int i = 0, j = 0;
+			scanf("%d%d",&i, &j);
+			first_incident(i, j);
 		}
 		else if(incident == "2")
 		{
@@ -54,13 +85,16 @@ int main()
 			longint s = 0;
 			scanf("%u%llu",&i, &s);
 			
+			//second_incident(i, s);
 		}
 		else
 		{
 			printf("ERROR\n");
 			break;
 		}
+		cout << disjoint_Set[1].key << endl;
+		cout << disjoint_Set[2].key << endl;
+		cout << disjoint_Set[3].key << endl;
 	}
-
 	return 0;
 }
