@@ -27,7 +27,8 @@ int find_owner(int);
 void owner_identified();
 void first_incident(int , int);
 
-void inorder_integer_avl(const struct avl_node *,const long_int , long_int *, int *);
+void inorder_integer_avl(const struct avl_node *,const long_int,
+						 long_int *, int *);
 int int_compare(const void *, const void *, void *);
 void second_incident(int , long_int);
 
@@ -41,7 +42,7 @@ int main()
 	disjoint_Set[0] = Game(-1, -1);
 
 	int price = 0;
-	for(int i = 1; i <= _NUM_OF_OWNER; i++)
+	for(int i = 1; i <= _TOTAL_GAME; i++)
 	{
 		scanf("%d", &price);
 		disjoint_Set[i] = Game(i, price);
@@ -81,7 +82,7 @@ int find_owner(int c)
 }
 void owner_identified() //O(N) time
 {
-	for(int c = 1; c <= _NUM_OF_OWNER; c++)
+	for(int c = 1; c <= _TOTAL_GAME; c++)
 		disjoint_Set[ c ].owner = find_owner(c);
 }
 void first_incident(int i, int j)
@@ -106,32 +107,29 @@ void first_incident(int i, int j)
 	owner_identified();
 }
 
-void inorder_integer_avl(const struct avl_node* node,const long_int s, long_int* total , int* k)
+void inorder_integer_avl(const struct avl_node* node,const long_int s,
+						 long_int* total , int* k)
 {
 	if(node == NULL)
 		return;
-	
+
 	if(node->avl_link[0] != NULL)
-	inorder_integer_avl(node->avl_link[0], s, total, k);
-	if(*total == s)
-		return;
-	else if(*total > s)
-	{
-		(*k)--;
-		return;
-	}
-	
+		inorder_integer_avl(node->avl_link[0], s, total, k);
+
 	*total += node->avl_data;
 	(*k)++;
+
 	if(*total == s)
 		return;
 	else if(*total > s)
 	{
-		(*k)--;
+		cerr << s << endl;
+		k--;
 		return;
 	}
+	
 	if(node->avl_link[1] != NULL)
-	inorder_integer_avl(node->avl_link[1], s, total, k);
+		inorder_integer_avl(node->avl_link[1], s, total, k);
 }
 int int_compare(const void *pa, const void *pb, void * param)
 {
@@ -149,7 +147,9 @@ void second_incident(int i, long_int s)
 
 	for(int j = 1; j <= _TOTAL_GAME; j++)
 		if(disjoint_Set[ j ].owner == i)
+		{	
 			avl_probe(avl_tree, disjoint_Set[ j ].price);
+		}
 	
 	long_int* total = new long_int(0);
 	int* k = new int(0);
