@@ -147,11 +147,9 @@ void second_incident(int i, long_int s)
 	struct avl_table *avl_tree ;
 	avl_tree = avl_create(int_compare , NULL, NULL);
 
-	for(int j = 0; j < _TOTAL_GAME; j++)
+	for(int j = 1; j <= _TOTAL_GAME; j++)
 		if(disjoint_Set[ j ].owner == i)
-		{
 			avl_probe(avl_tree, disjoint_Set[ j ].price);
-		}
 	
 	long_int* total = new long_int(0);
 	int* k = new int(0);
