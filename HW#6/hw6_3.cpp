@@ -18,7 +18,7 @@ public:
 	int price;
 };
 
-Game disjoint_Set[110000];
+Game disjoint_Set[110000]; //disjoint_Set[i] means i-th game
 int _NUM_OF_OWNER = 0;
 
 int find_owner(int);
@@ -63,7 +63,6 @@ int main()
 			printf("ERROR\n");
 			break;
 		}
-
 	}
 	return 0;
 }
@@ -74,7 +73,7 @@ int find_owner(int c)
 	else
 		return find_owner( disjoint_Set[ c ].owner );
 }
-void owner_identified()
+void owner_identified() //O(N) time
 {
 	for(int c = 1; c <= _NUM_OF_OWNER; c++)
 		disjoint_Set[ c ].owner = find_owner(c);
@@ -84,6 +83,8 @@ void first_incident(int i, int j)
 	// CASE1: If u also owns the j-th computer game, 
 	// u will simply switch to play her/his j-th game.
 
+	i = find_owner(i);
+	j = find_owner(j);
 	if(disjoint_Set[ i ].owner == disjoint_Set[ j ].owner)
 		return;
 
@@ -97,5 +98,7 @@ void first_incident(int i, int j)
 	disjoint_Set[ j ].owner = i;
 	_NUM_OF_OWNER--;
 	owner_identified();
+	//for(int i = 1; i <= 4; i++)
+		//cout << disjoint_Set[ i ].owner << endl;
 }
 
