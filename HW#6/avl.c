@@ -418,7 +418,6 @@ trav_refresh (struct avl_traverser *trav)
         }
     }
 }
-
 /* Initializes |trav| for use with |tree|
    and selects the null node. */
 void

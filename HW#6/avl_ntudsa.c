@@ -139,7 +139,7 @@ avl_probe (struct avl_table *tree, int item) /* change code by Yen-Chieh */
           x->avl_sum[1] = t1; /* add code by Yen-Chieh */
           y->avl_sum[0] = t2; /* add code by Yen-Chieh */
 
-          w->avl_cnode[0] = x->avl_cnode[0] + x->avl_cnt + x->avl_cnode[1]; /* add code by Yen-Chieh */
+          w->avl_cnode[0] = x->avl_cnode[0] + x->avl_cnt + x->avl_cnode[1];  /*add code by Yen-Chieh */
           w->avl_cnode[1] = y->avl_cnode[0] + y->avl_cnt + y->avl_cnode[1]; /* add code by Yen-Chieh */
 
           w->avl_sum[0] = x->avl_sum[0] + (long long int)x->avl_cnt * x->avl_data + x->avl_sum[1]; /* add code by Yen-Chieh */
