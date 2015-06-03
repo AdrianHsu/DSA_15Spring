@@ -10,7 +10,6 @@ using namespace std;
 
 typedef unsigned long long long_int;
 
-//
 int disjoint_Set[_MAX_GAME]; //disjoint_Set[i] means ith game owner
 int _NUM_OF_OWNER = 0;
 int _TOTAL_GAME = 0;
@@ -122,6 +121,7 @@ void inorder_integer_avl(const struct avl_node* node, const long_int s,
 	if(node->avl_link[0] != NULL && *_DONE){
 		inorder_integer_avl(node->avl_link[0], s, total, k, _DONE);
 	}
+
 	if(*_DONE)
 	{
 		*total += node->avl_data;
