@@ -106,7 +106,7 @@ void first_incident(int i, int j)
 
 	_NUM_OF_OWNER--;
 
-	owner_identified();
+	//owner_identified();
 }
 
 void inorder_integer_avl(const struct avl_node* node, const long_int s,
@@ -154,6 +154,7 @@ void second_incident(int i, long_int s)
 	i = find_owner(i);
 	struct avl_table *avl_tree ;
 	avl_tree = avl_create(int_compare , NULL, NULL);
+	owner_identified();
 
 	
 	for(int j = 1; j <= _TOTAL_GAME; j++)
