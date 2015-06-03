@@ -98,11 +98,12 @@ int main(){
 		char *element = (char*)malloc(sizeof(char)* MAX_STRLEN);
 		if(scanf("%s", element) == 1)
 		{
-			void** p = avl_probe(avl_tree, element);
-			void** q = bst_probe(bst_tree, element);
-			void** r = rb_probe(rb_tree, element);
+			avl_probe(avl_tree, element);
+			bst_probe(bst_tree, element);
+			rb_probe(rb_tree, element);
 		}
 	}
+
 	preorder_integer_avl(avl_tree->avl_root);
 	printf("\n");
 	preorder_integer_bst(bst_tree->bst_root);

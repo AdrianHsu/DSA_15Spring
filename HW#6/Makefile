@@ -6,7 +6,7 @@ PROB1 = hw6_2
 PROB2 = hw6_3
 TARGET = $(PROB1) $(PROB2)
 OBJ1 = avl.o rb.o bst.o test.o
-OBJ2 = avl.o hw6_3.o
+OBJ2 = avl_ntudsa.o hw6_3.o
 OBJS = $(OBJ1) $(OBJ2)
 
 RM = rm -rf
