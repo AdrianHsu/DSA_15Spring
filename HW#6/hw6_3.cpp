@@ -80,6 +80,7 @@ int find_owner(int c)
 		return c;
 	else
 		return find_owner( disjoint_Set[ c ].owner );
+		//return disjoint_Set[ c ].owner = find_owner( disjoint_Set[ c ].owner );
 }
 void owner_identified() //O(N) time
 {
@@ -100,11 +101,12 @@ void first_incident(int i, int j)
 	// u will visit the person who owns the j-th game,
 	// say v, and borrow all v’s computer games.
 
-	j = find_owner(j);	
+	j = find_owner(j);
 	disjoint_Set[ j ].owner = i;
+
 	_NUM_OF_OWNER--;
 
-	//owner_identified();
+	owner_identified();
 }
 
 void inorder_integer_avl(const struct avl_node* node, const long_int s,
@@ -153,14 +155,14 @@ void second_incident(int i, long_int s)
 	struct avl_table *avl_tree ;
 	avl_tree = avl_create(int_compare , NULL, NULL);
 
-	owner_identified();
+	
 	for(int j = 1; j <= _TOTAL_GAME; j++)
 	{
-		if(disjoint_Set[ j ].owner  == i)
+		if( disjoint_Set[ j ].owner == i)
 		{
-			//long_int* element = (long_int*)malloc(sizeof(long_int));
-			//*element = disjoint_Set[ j ].price;
-			//avl_probe(avl_tree, element);
+			// long_int* element = (long_int*)malloc(sizeof(long_int));
+			// *element = disjoint_Set[ j ].price;
+			// avl_probe(avl_tree, element);
 			avl_probe(avl_tree, disjoint_Set[ j ].price);
 		}
 	}
