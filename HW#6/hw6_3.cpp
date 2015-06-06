@@ -35,7 +35,7 @@ void inorder_integer_avl(const struct avl_node *,const long_int,
 
 int main()
 {
-	for(int i = 1; i <= _MAX_GAME; i++)
+	for(int i = 0; i < _MAX_GAME; i++)
 		avl_tree[ i ] = avl_create(int_compare , NULL, NULL);
 
 	int n = 0, m = 0;
