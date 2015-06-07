@@ -105,9 +105,9 @@ int main(){
 	}
 
 	preorder_integer_avl(avl_tree->avl_root);
-	printf("\n");
+	puts("");
 	preorder_integer_bst(bst_tree->bst_root);
-	printf("\n");
+	puts("");
 	preorder_integer_rb(rb_tree->rb_root);
 	puts("");
 	return 0 ;
